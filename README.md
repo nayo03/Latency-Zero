@@ -6,7 +6,7 @@ QUE HE HECHO PARA CREAR EL PROYECTO
 PROJECT SETINGS
 	 [Editor]
 
-(Edit → Project Settings → Editor)
+(Edit → Project Settings → Editor)  esto lo he visto en un tutorial, pero en las nuevas versiones ya estaba por defecto
 - Version Control → Visible Meta Files
 - Asset Serialization → Force Text
 
