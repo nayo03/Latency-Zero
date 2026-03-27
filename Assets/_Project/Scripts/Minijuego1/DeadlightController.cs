@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class DeadlightController : MonoBehaviour
 {
@@ -18,10 +19,14 @@ public class DeadlightController : MonoBehaviour
     [SerializeField] private SuccessZone goodZone;
     
     private float angle = 0f;
+    private int punctuation = 0;
+    private bool isMoving = true;
+    private float initialSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        initialSpeed = speed; // Store the initial speed value
 
     }
 
@@ -39,27 +44,45 @@ public class DeadlightController : MonoBehaviour
         angle %= 360f; // Keep the angle between 0 and 360 degrees
 
         //Read user input to stop the needle rotation
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && isMoving)
         {
-            speed = 0f; // Stop the needle rotation
-            CheckResult(); // Check the result based on the current angle
+            //Corroutine which 
+            StartCoroutine(ResultRoutine());
+            
         }
+    }
+    private IEnumerator ResultRoutine()
+    {
+        speed = 0f;
+        isMoving = false;
+
+        CheckResult();
+
+        yield return new WaitForSeconds(1.5f);
+
+        angle = 0f;
+        myNeedle.transform.localRotation = Quaternion.identity; // Reset the needle's rotation
+
+        speed = initialSpeed; // Reset the speed to its initial value
+        isMoving = true;
     }
 
     private void CheckResult()
     {
         if (angle >= perfectZone.minAngle && angle <= perfectZone.maxAngle)
         {
-            Debug.Log("Perfect!");
+            punctuation += 200;
+
         }
         else if (angle >= goodZone.minAngle && angle <= goodZone.maxAngle)
         {
-            Debug.Log("Good!");
+            punctuation += 100;
         }
         else
         {
-            Debug.Log("Bad!");
+            punctuation -= 150;
         }
+        Debug.Log(punctuation);
 
     }
 }
