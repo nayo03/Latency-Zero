@@ -18,6 +18,21 @@ EditorBuildSettings:
     path: Assets/_Project/00_Core/Scenes/Transition.unity
     guid: 20f3fefdf7750ca49b1d4086ebbfdda4
   - enabled: 1
+    path: Assets/_Project/G1_BakeToTheMoon/Scenes/G1_Inicial.unity
+    guid: b5e9ff64828f6a54db816d22e03fa3fe
+  - enabled: 1
+    path: Assets/_Project/G2_Crumbscape/Scenes/G2_Inicial.unity
+    guid: d042dd19a46fd1b4a9e1024655e09d49
+  - enabled: 1
+    path: Assets/_Project/G3_RocketWarrior/Scenes/G3_Inicial.unity
+    guid: 8334bbd72db64a84f9176f8508628590
+  - enabled: 1
+    path: Assets/_Project/G4_AsteroidBreaker/Scenes/G4_Inicial.unity
+    guid: 78173c4c086a76c4e80b650b301cbdcb
+  - enabled: 1
+    path: Assets/_Project/G5_Scanlien/Scenes/G5_Inicial.unity
+    guid: 53ed4410ad6fb854891dc032abe4197b
+  - enabled: 1
     path: Assets/_Project/00_Core/Scenes/PuntuacionFinal.unity
     guid: 0fd0e7f6dba011f47a57db526666054a
   m_configObjects:
