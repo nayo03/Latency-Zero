@@ -36,6 +36,7 @@ EditorBuildSettings:
     path: Assets/_Project/00_Core/Scenes/PuntuacionFinal.unity
     guid: 0fd0e7f6dba011f47a57db526666054a
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 431a4290d01cce949a8cf50368295f6a, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 994b1ce38f8c30a44a311e3a6fac772a, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a973e0a4420efc64d8e4317f51b94401, type: 2}

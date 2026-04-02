@@ -28,7 +28,7 @@ public class G4_Player : MonoBehaviour
 {
     public float velocidad = 0.5f;
     private PlayerInput playerInput;
-    private G4_GameManager gameManager; 
+    private G4_GameManager gameManager;
 
     void Start()
     {
