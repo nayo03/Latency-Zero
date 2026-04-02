@@ -62,14 +62,19 @@ public class G5_GameManager : MonoBehaviour
     IEnumerator ReactivarXR()
     {
         yield return new WaitForSecondsRealtime(0.5f);
-        if (XRGeneralSettings.Instance.Manager.activeLoader == null)
-        {
-            yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-        }
 
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
+        // Verificación de seguridad en cascada
+        if (XRGeneralSettings.Instance != null && XRGeneralSettings.Instance.Manager != null)
         {
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
+            if (XRGeneralSettings.Instance.Manager.activeLoader == null)
+            {
+                yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+            }
+
+            if (XRGeneralSettings.Instance.Manager.activeLoader != null)
+            {
+                XRGeneralSettings.Instance.Manager.StartSubsystems();
+            }
         }
     }
 

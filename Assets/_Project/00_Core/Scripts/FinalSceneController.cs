@@ -18,10 +18,5 @@ public class FinalSceneController : MonoBehaviour
             // Mostramos el resultado final
             textoPuntos.text = "PUNTUACIÓN TOTAL: " + MainManager.Instance.puntosTotalesVisualizar;
         }
-
-        // Aquí se podrían añadir más cosas de "Final de Juego":
-        // - Lanzar fuegos artificiales.
-        // - Reproducir una música de victoria.
-        // - Activar un trofeo si han sacado más de X puntos.
     }
 }

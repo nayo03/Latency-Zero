@@ -1149,7 +1149,6 @@ GameObject:
   - component: {fileID: 1319469494}
   - component: {fileID: 1319469500}
   - component: {fileID: 1319469499}
-  - component: {fileID: 1319469498}
   - component: {fileID: 1319469497}
   - component: {fileID: 1319469496}
   - component: {fileID: 1319469495}
@@ -1218,27 +1217,6 @@ Rigidbody:
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!135 &1319469497
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319469493}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &1319469498
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1574,7 +1552,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1589119973}
-  - component: {fileID: 1589119974}
   - component: {fileID: 1589119975}
   m_Layer: 0
   m_Name: XR Origin
@@ -1599,19 +1576,6 @@ Transform:
   - {fileID: 651628613}
   m_Father: {fileID: 1319469494}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1589119974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1589119972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5373bb9cee7dfa44fb3629aff1b767ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::G4_Player
-  velocidad: 1.5
 --- !u!114 &1589119975
 MonoBehaviour:
   m_ObjectHideFlags: 0

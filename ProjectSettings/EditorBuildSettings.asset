@@ -6,8 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Project/00_Core/Scenes/MainControl.unity
+    guid: cdb7a9dfdea87d9428f9ed17236729c4
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/MainMenu.unity
+    guid: e232d004211cad44cb3e13e89be339c4
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/MenuSeleccionJuegos.unity
+    guid: 633d8cc14a5049a4b9bb0d07aaecb45c
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/Transition.unity
+    guid: 20f3fefdf7750ca49b1d4086ebbfdda4
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/PuntuacionFinal.unity
+    guid: 0fd0e7f6dba011f47a57db526666054a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 994b1ce38f8c30a44a311e3a6fac772a, type: 2}
