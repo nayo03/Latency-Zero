@@ -6,8 +6,38 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Project/00_Core/Scenes/MainControl.unity
+    guid: cdb7a9dfdea87d9428f9ed17236729c4
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/MainMenu.unity
+    guid: e232d004211cad44cb3e13e89be339c4
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/MenuSeleccionJuegos.unity
+    guid: 633d8cc14a5049a4b9bb0d07aaecb45c
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/Transition.unity
+    guid: 20f3fefdf7750ca49b1d4086ebbfdda4
+  - enabled: 1
+    path: Assets/_Project/G1_BakeToTheMoon/Scenes/G1_Inicial.unity
+    guid: b5e9ff64828f6a54db816d22e03fa3fe
+  - enabled: 1
+    path: Assets/_Project/G2_Crumbscape/Scenes/G2_Inicial.unity
+    guid: d042dd19a46fd1b4a9e1024655e09d49
+  - enabled: 1
+    path: Assets/_Project/G3_RocketWarrior/Scenes/G3_Inicial.unity
+    guid: 8334bbd72db64a84f9176f8508628590
+  - enabled: 1
+    path: Assets/_Project/G4_AsteroidBreaker/Scenes/G4_Inicial.unity
+    guid: 78173c4c086a76c4e80b650b301cbdcb
+  - enabled: 1
+    path: Assets/_Project/G5_Scanlien/Scenes/G5_Inicial.unity
+    guid: 53ed4410ad6fb854891dc032abe4197b
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/PuntuacionFinal.unity
+    guid: 0fd0e7f6dba011f47a57db526666054a
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 431a4290d01cce949a8cf50368295f6a, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 994b1ce38f8c30a44a311e3a6fac772a, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a973e0a4420efc64d8e4317f51b94401, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 1f1063e2b50677944924dcfb52c0e2c0, type: 2}
