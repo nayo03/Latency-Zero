@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class DeadlightController : MonoBehaviour
 {
@@ -19,9 +20,10 @@ public class DeadlightController : MonoBehaviour
     [SerializeField] private SuccessZone goodZone;
     
     private float angle = 0f;
-    private int punctuation = 0;
     private bool isMoving = true;
     private float initialSpeed;
+    public static event Action<int> OnTryComplete; // Event to notify when the player tries to complete the action, passing the punctuation as an argument
+    private bool gameActive = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +35,8 @@ public class DeadlightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gameActive) return;
+
         //Rotation calculation for the needle
         float rotationThisFrame = speed * Time.deltaTime;
 
@@ -69,6 +73,8 @@ public class DeadlightController : MonoBehaviour
 
     private void CheckResult()
     {
+        int punctuation = 0;
+
         if (angle >= perfectZone.minAngle && angle <= perfectZone.maxAngle)
         {
             punctuation += 200;
@@ -84,5 +90,13 @@ public class DeadlightController : MonoBehaviour
         }
         Debug.Log(punctuation);
 
+        OnTryComplete?.Invoke(punctuation);
+
+    }
+
+    public void SwitchOffNeedle()
+    {
+        gameActive = false;
+        speed = 0f;
     }
 }
