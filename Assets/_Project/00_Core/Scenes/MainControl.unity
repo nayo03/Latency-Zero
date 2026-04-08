@@ -295,6 +295,10 @@ PrefabInstance:
       propertyPath: 'listaEscenasIniciales.Array.data[4]'
       value: G5_Inicial
       objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'fondosIntros.Array.data[1]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 8aa41f31716bfc8469a1ebfedad4663c, type: 3}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS
