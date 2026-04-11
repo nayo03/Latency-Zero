@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - G2_DeathZone
   layers:
   - Default
   - TransparentFX

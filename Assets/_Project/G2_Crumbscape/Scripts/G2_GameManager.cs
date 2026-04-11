@@ -49,7 +49,7 @@ public class G2_GameManager : MonoBehaviour
         // Actualización del marcador visual del minijuego
         if (textoUI != null)
         {
-            textoUI.text = "Puntos: " + puntosTotales;
+            textoUI.text = "Score: " + puntosTotales;
         }
 
         // COMUNICACIÓN CON EL CORE:
@@ -77,6 +77,9 @@ public class G2_GameManager : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
+            // -------- PAUSAMOS EL JUEGO -----------
+            Time.timeScale = 0f;
+
             // LÓGICA DE NAVEGACIÓN:
             // El MainManager nos dice si estamos en "Historia" para mostrar el botón adecuado.
             if (MainManager.Instance != null)
@@ -95,5 +98,9 @@ public class G2_GameManager : MonoBehaviour
                 }
             }
         }
+    }
+    private void OnDestroy()
+    {
+        Time.timeScale = 1f;
     }
 }

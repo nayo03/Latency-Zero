@@ -70,7 +70,7 @@ MonoBehaviour:
   - q
   fondosFinales:
   - {fileID: 21300000, guid: cd7d61ebb836bb04094fa95d674d5bef, type: 3}
-  - {fileID: 21300000, guid: b2864ae56dac9ac4c846e3f8b741255f, type: 3}
+  - {fileID: 21300000, guid: cd7d61ebb836bb04094fa95d674d5bef, type: 3}
   - {fileID: 21300000, guid: 4c860d799eb2eb142bc9690df5b03759, type: 3}
   - {fileID: 21300000, guid: 45528ae2eef7da14cbebc244888cf610, type: 3}
   - {fileID: 21300000, guid: 085a11ea6d537a54aa96cc581a19cf24, type: 3}
