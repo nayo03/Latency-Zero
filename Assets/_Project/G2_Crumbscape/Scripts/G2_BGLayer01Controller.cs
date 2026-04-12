@@ -44,7 +44,7 @@ public class G2_BGLayer01Controller : MonoBehaviour
     }
 
     // =========================================================================
-    // >>> MOVIMIENTO DE LOS OBJETOS HACIA LA IZQUIERDA Y RECICLAJE (POOL)
+    // >>> MOVIMIENTO DE LOS OBJETOS HACIA LA IZQUIERDA Y RECICLAJE 
     // =========================================================================
     void Mover(Transform obj, float vel)
     {

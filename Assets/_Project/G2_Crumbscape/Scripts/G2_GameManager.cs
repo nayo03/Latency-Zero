@@ -66,6 +66,9 @@ public class G2_GameManager : MonoBehaviour
         }
     }
 
+    // =========================================================================
+    // >>> GANAR MINIJUEGO
+    // =========================================================================
     private void GanarMinijuego()
     {
         if (panelVictoria != null)
