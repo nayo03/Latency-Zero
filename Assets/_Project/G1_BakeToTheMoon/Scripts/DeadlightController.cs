@@ -25,6 +25,10 @@ public class DeadlightController : MonoBehaviour
     public static event Action<int> OnTryComplete; // Event to notify when the player tries to complete the action, passing the punctuation as an argument
     private bool gameActive = true;
 
+    [Header("Ajustes de Tiempo")]
+    [SerializeField] private float timeShowResult = 1.0f;
+    [SerializeField] private float timePreparation = 1.0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -37,24 +41,29 @@ public class DeadlightController : MonoBehaviour
     {
         if (!gameActive) return;
 
-        //Rotation calculation for the needle
-        float rotationThisFrame = speed * Time.deltaTime;
-
-        // Add the rotation to the needle
-        myNeedle.transform.Rotate(Vector3.forward, rotationThisFrame);
-
-        // Update the angle variable to keep track of the current rotation
-        angle += rotationThisFrame;
-        angle %= 360f; // Keep the angle between 0 and 360 degrees
-
-        //Read user input to stop the needle rotation
-        if (Input.GetKeyDown(KeyCode.Space) && isMoving)
+        if (isMoving)
         {
-            //Corroutine which 
-            StartCoroutine(ResultRoutine());
-            
+            //Rotation calculation for the needle
+            float rotationThisFrame = speed * Time.deltaTime;
+
+            // Add the rotation to the needle
+            myNeedle.transform.Rotate(Vector3.forward, rotationThisFrame);
+
+            // Update the angle variable to keep track of the current rotation
+            angle += rotationThisFrame;
+            angle %= 360f; // Keep the angle between 0 and 360 degrees
+
+            //Read user input to stop the needle rotation
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // Start the coroutine to handle the result of the player's attempt
+                StartCoroutine(ResultRoutine());
+
+            }
         }
+        
     }
+    // Coroutine to handle the result of the player's attempt, including stopping the needle, checking the result, and resetting for the next attempt
     private IEnumerator ResultRoutine()
     {
         speed = 0f;
@@ -62,15 +71,18 @@ public class DeadlightController : MonoBehaviour
 
         CheckResult();
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(timeShowResult);
 
         angle = 0f;
         myNeedle.transform.localRotation = Quaternion.identity; // Reset the needle's rotation
+
+        yield return new WaitForSeconds(timePreparation);
 
         speed = initialSpeed; // Reset the speed to its initial value
         isMoving = true;
     }
 
+    // Method to check the result of the player's attempt and calculate the punctuation based on the angle of the needle
     private void CheckResult()
     {
         int punctuation = 0;
@@ -94,9 +106,25 @@ public class DeadlightController : MonoBehaviour
 
     }
 
+    // Method to switch off the needle, stopping its movement and preventing further attempts until reactivated
     public void SwitchOffNeedle()
     {
         gameActive = false;
         speed = 0f;
+    }
+
+    // Method to switch on the needle, allowing it to move and enabling player attempts
+    public void switchDifficulty(float newSpeed, float minP, float maxP, float minG, float maxG)
+    {
+        speed = newSpeed;
+        initialSpeed = newSpeed;
+
+        perfectZone.minAngle = minP;
+        perfectZone.maxAngle = maxP;
+        goodZone.minAngle = minG;
+        goodZone.maxAngle = maxG;
+
+        Debug.Log("Dificultad actualizada: " + newSpeed + " | Perfect Zone: " + perfectZone.minAngle + " - " + perfectZone.maxAngle + " | Good Zone: " + goodZone.minAngle + " - " + goodZone.maxAngle);
+
     }
 }
