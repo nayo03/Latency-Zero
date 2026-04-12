@@ -25,6 +25,7 @@ public class G2_Player : MonoBehaviour
     private G2_UIManager uiManager;
     public enum TipoMuerte { Caida, Choque }
     private SpriteRenderer spriteRenderer;
+    private GameObject thrusterEffect;
 
     void Start()
     {
@@ -43,6 +44,9 @@ public class G2_Player : MonoBehaviour
 
         // Buscamos el spriteRenderer de la nave para cambiarle el color si muere por caída
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        Transform t = transform.Find("ThrusterEffect");
+        if (t != null) thrusterEffect = t.gameObject;
 
     }
 
@@ -71,40 +75,27 @@ public class G2_Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D otro)
     {
         if (isDead) return;
-        // Buscamos objetos con el Tag "Item".
-        if (otro.CompareTag("Item"))
+        // Buscamos objetos con el tad G2_Asteroid
+        if (otro.CompareTag("G2_Asteroid"))
         {
-            Destroy(otro.gameObject); // Eliminamos el objeto recogido
+            OnDie(TipoMuerte.Choque);
+        }
+
+        // Buscamos objetos con los Tags "G2_Star" y "G2_Bread".
+        else if (otro.CompareTag("G2_Star") || otro.CompareTag("G2_Bread"))
+        {
+            otro.gameObject.SetActive(false); // Desactivamos el objeto para que vuelva al PoolManager
 
             // COMUNICACIÓN CON EL MANAGER LOCAL:
             if (gameManager != null)
             {
                 gameManager.ItemRecogido();
-            }
-            else
-            {
-                // Aviso crítico si el nivel no está bien montado.
-                Debug.LogError("<color=red>¡ERROR!</color> El Player no encuentra el G2_GameManager en esta escena.");
-            }
+            }            
         }
 
         else if (otro.CompareTag("G2_DeathZone"))
         {
             OnDie(TipoMuerte.Caida);
-        }
-    }
-
-    // =========================================================================
-    // >>> DETECCIÓN DE COLISIONES
-    // =========================================================================
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (isDead) return;
-
-        // Si chocamos con algo que tenga el Tag "Asteroid"
-        if (collision.gameObject.CompareTag("Asteroid"))
-        {
-            OnDie(TipoMuerte.Choque);
         }
     }
 
@@ -131,9 +122,9 @@ public class G2_Player : MonoBehaviour
         // 1. Pausamos la nave SIEMPRE (se queda congelada) y apagamos la animación del motor
         rb.simulated = false;
 
-        if (transform.childCount > 0)
+        if (thrusterEffect != null)
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            thrusterEffect.SetActive(false);
         }
 
         // 2. Cambiamos el color o visibilidad según cómo muera

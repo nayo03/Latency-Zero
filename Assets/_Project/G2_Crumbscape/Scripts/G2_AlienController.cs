@@ -19,6 +19,7 @@ public class G2_AlienController : MonoBehaviour
 
     [Header("Efectos")]
     public GameObject explosionPrefab; // Prefab de la explosión
+    private GameObject thrusterEffect; // El hijo con la animación del motor
 
     void Start()
     {
@@ -32,7 +33,12 @@ public class G2_AlienController : MonoBehaviour
         }
                 
         spriteRenderer = GetComponent<SpriteRenderer>(); // Buscamos el sprite del alien 
-        
+
+        if (transform.childCount > 0)
+        {
+            thrusterEffect = transform.GetChild(0).gameObject;
+        }
+
         StartEntry(); // Iniciamos la entrada del alien en pantalla
     }
 
@@ -99,8 +105,7 @@ public class G2_AlienController : MonoBehaviour
 
         // Activamos el sprite (por si estaba muerto)
         if (spriteRenderer != null) spriteRenderer.enabled = true;
-        
-        transform.GetChild(0).gameObject.SetActive(true); // Activamos el motor visual (es el hijo 0)
+        if (thrusterEffect != null) thrusterEffect.SetActive(true); // Activamos el motor visual 
     }
 
     // =========================================================================
@@ -124,13 +129,13 @@ public class G2_AlienController : MonoBehaviour
 
         // Ocultamos el sprite
         if (spriteRenderer != null) spriteRenderer.enabled = false;
-        transform.GetChild(0).gameObject.SetActive(false); // Apagamos el motor visual
+        if (thrusterEffect != null) thrusterEffect.SetActive(false);
     }
 
     // El Alien muere si choca contra un asteroide y está vivo
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Asteroid") && !isDead) 
+        if (other.CompareTag("G2_Asteroid") && !isDead) 
         {
             OnDie();
         }
