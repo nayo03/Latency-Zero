@@ -2,26 +2,26 @@ using UnityEngine;
 using TMPro;
 
 // ==============================================================================
-// >>> G3_GAMEMANAGER: Controlador específico del Minijuego 3
+// >>> G3_GAMEMANAGER: Controlador especï¿½fico del Minijuego 3
 // Este es el "cerebro" local de vuestro nivel. Se encarga de contar los items
 // y avisar al MainManager (el motor global) cuando ganamos.
 /* ---------------------------------------------------------------------------------
-    NOTAS BÁSICAS (COMUNES A TODOS LOS NIVELES)
+    NOTAS Bï¿½SICAS (COMUNES A TODOS LOS NIVELES)
     --- PUNTOS Y DATOS (MainManager) ---
     - MainManager.Instance.SumarPuntoTemporal(int) -> Suma puntos SOLO en vuestro nivel. 
       Si el jugador abandona la escena o reinicia, este valor se limpia. Solo se guarda 
-      en la base de datos al llamar a 'FinalizarEscenaActual()' y si está en modo historia.
+      en la base de datos al llamar a 'FinalizarEscenaActual()' y si estï¿½ en modo historia.
     - MainManager.Instance.modoHistoriaActivo      -> (Bool) Para saber si es modo Historia o Libre.
 
-    --- INTERFAZ Y NAVEGACIÓN (UIMainManager) ---
+    --- INTERFAZ Y NAVEGACIï¿½N (UIMainManager) ---
     - UIMainManager.Instance.Boton_FinalDelJuego() -> Guarda puntos, limpia RAM y 
-      avanza en la historia (Usadlo en el botón "Siguiente/Continuar" al ganar).
-    - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menú de selección 
+      avanza en la historia (Usadlo en el botï¿½n "Siguiente/Continuar" al ganar).
+    - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menï¿½ de selecciï¿½n 
       con limpieza de valores temporales.
 
-    --- CONFIGURACIÓN DE ESCENAS ---
+    --- CONFIGURACIï¿½N DE ESCENAS ---
     *** !!! IMPORTANTE: Toda escena nueva debe registrarse en 'File > Build Settings'. 
-        El orden en la lista determina el índice de carga en el Modo Historia. ***
+        El orden en la lista determina el ï¿½ndice de carga en el Modo Historia. ***
     --------------------------------------------------------------------------------- */
 // ==============================================================================
 

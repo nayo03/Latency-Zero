@@ -1,70 +1,50 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
-// ==============================================================================
-// >>> G3_PLAYER: Controlador de movimiento y detecciÛn (Minijuego 3)
-// Gestiona el movimiento mediante el nuevo Input System y detecta la colisiÛn 
-// con items para reportar los puntos al G3_GameManager local.
-/* ---------------------------------------------------------------------------------
-    NOTAS DE MOVIMIENTO (Input System)
-    --- CONFIGURACI”N ---
-    - PlayerInput: El componente debe estar en el MISMO objeto que este script.
-    - Acciones: Lee la acciÛn "Move" (Vector2) definida en vuestro Action Asset.
-    
-    --- INTERACCI”N ---
-    - Tags: Los objetos recolectables DEBEN tener el Tag "Item" y el IsTrigger activo
-      en su Collider2D para que la recolecciÛn funcione.
-    
-    --- SEGURIDAD ---
-    - Si el PlayerInput falla o no est· asignado, el script se detiene (return) para 
-      evitar que la consola se llene de errores de referencia nula.
-    - El script busca autom·ticamente el G3_GameManager en la escena al iniciar.
-    --------------------------------------------------------------------------------- */
-// ==============================================================================
+using UnityEngine.InputSystem; // Necesario para usar PlayerInput
 
 public class G3_Player : MonoBehaviour
 {
-    // AJUSTES
-    public float velocidad = 5f;
+    [Header("Movimiento")]
+    public float velocidad = 5f; // Qu√© tan r√°pido se mueve la nave. Lo puedes cambiar desde el Inspector
 
-    private PlayerInput playerInput;
-    private G3_GameManager gameManager;
+    private PlayerInput _playerInput;     // Referencia al componente PlayerInput que acabas de a√±adir
+    private Vector2 _inputMovimiento;     // Guarda hacia d√≥nde est√° moviendo el jugador (ej: arriba-derecha = (1,1))
+    private Vector2 _minBounds;           // L√≠mite inferior-izquierdo de la pantalla en coordenadas de mundo
+    private Vector2 _maxBounds;           // L√≠mite superior-derecho de la pantalla en coordenadas de mundo
 
-    void Start()
+    void Start() // Se ejecuta UNA vez al arrancar la escena
     {
-        // 1. Buscamos el componente EN el propio jugador (eficiencia local)
-        playerInput = GetComponent<PlayerInput>();
+        // Buscamos el PlayerInput en este mismo GameObject
+        _playerInput = GetComponent<PlayerInput>();
+       // _playerInput.actions.FindActionMap("Player").Enable();
 
-        // 2. Buscamos al manager del G3 para reportar puntos
-        gameManager = Object.FindAnyObjectByType<G3_GameManager>();
+        // Calculamos los bordes de la pantalla para que la nave no salga
+        Camera cam = Camera.main;
+        float margen = 0.3f; // Un peque√±o margen para que no quede pegado al borde
+        _minBounds = cam.ViewportToWorldPoint(new Vector2(0, 0)); // Esquina inferior izquierda
+        _maxBounds = cam.ViewportToWorldPoint(new Vector2(1, 1)); // Esquina superior derecha
+        _minBounds += Vector2.one * margen; // Aplicamos el margen
+        _maxBounds -= Vector2.one * margen;
     }
 
-    void Update()
+    void Update() // Se ejecuta CADA FRAME (60 veces por segundo aprox)
     {
-        // SEGURIDAD: Evitamos errores si no hay Input configurado
-        if (playerInput == null) return;
+        if (_playerInput == null) return; // Seguridad: si no hay PlayerInput, no hace nada
 
-        // Leemos el valor del joystick o WASD
-        Vector2 inputMovimiento = playerInput.actions["Move"].ReadValue<Vector2>();
+        // Le preguntamos al PlayerInput qu√© est√° haciendo el jugador
+        // "Move" es el nombre de la acci√≥n que definiremos en el Action Asset
+        _inputMovimiento = _playerInput.actions["Move"].ReadValue<Vector2>();
 
-        // Aplicamos el movimiento al transform (Plano 2D)
-        Vector3 movimiento = new Vector3(inputMovimiento.x, inputMovimiento.y, 0);
-        transform.position += movimiento * velocidad * Time.deltaTime;
-    }
+        // Convertimos ese input en movimiento 3D (Z=0 porque es 2D)
+        Vector3 mov = new Vector3(_inputMovimiento.x, _inputMovimiento.y, 0);
 
-    private void OnTriggerEnter2D(Collider2D otro)
-    {
-        // RECOLECCI”N DE ITEMS:
-        // Recordad poner el Tag "Item" a los objetos recolectables del G3.
-        if (otro.CompareTag("Item"))
-        {
-            Destroy(otro.gameObject);
+        // Movemos la nave: posici√≥n actual + direcci√≥n * velocidad * tiempo
+        // Time.deltaTime hace que el movimiento sea igual independientemente de los FPS
+        transform.position += mov * velocidad * Time.deltaTime;
 
-            // Si el manager existe, le avisamos del punto recogido
-            if (gameManager != null)
-            {
-                gameManager.ItemRecogido();
-            }
-        }
+        // Limitamos la posici√≥n a los bordes calculados en Start()
+        float x = Mathf.Clamp(transform.position.x, _minBounds.x, _maxBounds.x);
+        float y = Mathf.Clamp(transform.position.y, _minBounds.y, _maxBounds.y);
+        transform.position = new Vector3(x, y, 0);
+        //Debug.Log("Input: " + _inputMovimiento);
     }
 }
