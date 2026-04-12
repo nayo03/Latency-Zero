@@ -64,7 +64,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 85dd82fe2e7f85747bcf6b5dbc3b0eae, type: 3}
   textosIntros:
   - q
-  - q
+  - "Alright, let\u2019s try not to become space dust."
   - q
   - q
   - q

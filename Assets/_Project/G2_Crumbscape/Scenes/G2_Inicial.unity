@@ -2730,6 +2730,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'fondosFinales.Array.data[1]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 3f6d9c16833617048a21bc414721683f, type: 3}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosFinales.Array.data[1]'
+      value: "I didn\u2019t crumble under pressure."
+      objectReference: {fileID: 0}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS
