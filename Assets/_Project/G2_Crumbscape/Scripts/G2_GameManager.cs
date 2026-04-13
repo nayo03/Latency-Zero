@@ -1,109 +1,215 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 // ==============================================================================
 // >>> G2_GAMEMANAGER: Controlador específico del Minijuego 2
-// Este es el "cerebro" local de vuestro nivel. Se encarga de contar los items
-// y avisar al MainManager (el motor global) cuando ganamos.
-/* ---------------------------------------------------------------------------------
-   NOTAS BÁSICAS (COMUNES A TODOS LOS NIVELES)
-   --- PUNTOS Y DATOS (MainManager) ---
-   - MainManager.Instance.SumarPuntoTemporal(int) -> Suma puntos SOLO en vuestro nivel. 
-     Si el jugador abandona la escena o reinicia, este valor se limpia. Solo se guarda 
-     en la base de datos al llamar a 'FinalizarEscenaActual()' y si está en modo historia.
-   - MainManager.Instance.modoHistoriaActivo      -> (Bool) Para saber si es modo Historia o Libre.
-
-   --- INTERFAZ Y NAVEGACIÓN (UIMainManager) ---
-   - UIMainManager.Instance.Boton_FinalDelJuego() -> Guarda puntos, limpia RAM y 
-     avanza en la historia (Usadlo en el botón "Siguiente/Continuar" al ganar).
-   - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menú de selección 
-     con limpieza de valores temporales.
-
-   --- CONFIGURACIÓN DE ESCENAS ---
-   *** !!! IMPORTANTE: Toda escena nueva debe registrarse en 'File > Build Settings'. 
-       El orden en la lista determina el índice de carga en el Modo Historia. ***
-   --------------------------------------------------------------------------------- */
 // ==============================================================================
-
 public class G2_GameManager : MonoBehaviour
 {
-    // VARIABLES DE CONFIGURACIÓN
-    [Header("Ajustes del Nivel")]
-    public int itemsParaGanar = 2;
-    public TextMeshProUGUI textoUI;
-    public GameObject panelVictoria;
+    // ----------- SINGLETON -----------
+    public static G2_GameManager Instance;
 
-    [Header("Botones de Victoria")]
-    public GameObject botonContinuar;
-    public GameObject botonSalir;
-
-    private int itemsActuales = 0;
-    private int puntosTotales = 0;
-
-    public void ItemRecogido()
+    void Awake()
     {
-        // Incremento de contadores locales
-        itemsActuales++;
-        puntosTotales += 5;
-
-        // Actualización del marcador visual del minijuego
-        if (textoUI != null)
-        {
-            textoUI.text = "Score: " + puntosTotales;
-        }
-
-        // COMUNICACIÓN CON EL CORE:
-        // Se añade al registro temporal del MainManager (no se guarda en BD hasta ganar).
-        if (MainManager.Instance != null)
-        {
-            MainManager.Instance.SumarPuntoTemporal(5);
-        }
-
-        // VERIFICACIÓN: ¿Se han recogido todos los objetos necesarios?
-        if (itemsActuales >= itemsParaGanar)
-        {
-            GanarMinijuego();
-        }
+        Instance = this; // Instancia global para que Player y Alien puedan avisar de eventos
     }
 
-    // =========================================================================
-    // >>> GANAR MINIJUEGO
-    // =========================================================================
-    private void GanarMinijuego()
+    // ----------- VARIABLES ESTÁTICAS (CHECKPOINTS) -----------
+    // Estas variables NO se borran al usar LoadScene, permitiendo recordar datos entre niveles
+    private static int NivelCheckpoint = 1;   // Guarda en qué nivel se quedó el jugador
+    private static int PuntosCheckpoint = 0;  // Guarda los puntos acumulados para que no bajen a cero al cambiar de fase
+
+    // ----------- CONFIGURACIÓN -----------
+    [Header("Ajustes de Tiempo y Fases")]
+    public float tiempoNivel = 40f;         // Segundos que dura cada fase del minijuego
+    private float tiempoRestante;           // El reloj interno que descuenta segundos
+    private bool juegoTerminado = false;    // Si es true, detiene el reloj y la suma de puntos
+    private int puntosTotales = 0;          // Puntos acumulados en la partida actual
+
+    [SerializeField] public int NivelActual = 1; // Nivel que estamos jugando (público para el Spawner)
+    public int NivelesTotales = 3;               // Cuántos niveles hay que pasar para ganar
+
+    // ----------- REFERENCIAS INTERNAS -----------
+    [Header("Referencias UI y Paneles")]
+    [SerializeField] private G2_UIManager uiManager; // Acceso al script que dibuja los textos en pantalla
+    public GameObject G2_VictoryPanel;               // Panel que se activa al completar el nivel final
+    public GameObject G2_LevelPanel;                 // Panel de transición entre niveles
+
+    [Header("Botones de Victoria Final")]
+    public GameObject G2_ButtonContinue;             // Botón que solo sale si estamos en Modo Historia
+    public GameObject G2_ButtonExit;                 // Botón para volver al menú de selección
+
+    // ==========================================================================
+    // ----------- INICIO -----------
+    // ==========================================================================
+    void Start()
     {
-        if (panelVictoria != null)
+        // 1. Cargamos el progreso desde el último checkpoint
+        NivelActual = NivelCheckpoint;
+        puntosTotales = PuntosCheckpoint;
+
+        // 2. Sincronizamos con el MainManager para el conteo global
+        if (MainManager.Instance != null)
         {
-            // ACTIVACIÓN DE INTERFAZ:
-            panelVictoria.SetActive(true);
+            MainManager.Instance.puntosEnEsteMinijuego = puntosTotales;
+        }
 
-            // GESTIÓN DEL CURSOR: Se libera para que el jugador pueda clicar botones.
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+        // 3. Iniciamos el cronómetro y nos aseguramos de que el tiempo no esté pausado
+        tiempoRestante = tiempoNivel;
+        Time.timeScale = 1f;
 
-            // -------- PAUSAMOS EL JUEGO -----------
-            Time.timeScale = 0f;
+        // 4. Dibujamos los datos iniciales en la interfaz
+        ActualizarTodoEnUI();
+    }
 
-            // LÓGICA DE NAVEGACIÓN:
-            // El MainManager nos dice si estamos en "Historia" para mostrar el botón adecuado.
-            if (MainManager.Instance != null)
+    // ==========================================================================
+    // ----------- BUCLE DE JUEGO -----------
+    // ==========================================================================
+    void Update()
+    {
+        if (juegoTerminado) return; // Si el jugador ha muerto o hemos ganado, dejamos de descontar tiempo
+
+        // Cuenta atrás del cronómetro
+        if (tiempoRestante > 0)
+        {
+            tiempoRestante -= Time.deltaTime; // Mientras quede tiempo, restamos la fracción de segundo que ha pasado (deltaTime)
+            ActualizarTodoEnUI();
+        }
+        else
+        {
+            // El reloj llega a cero: bloqueamos el tiempo y decidimos si pasar fase o ganar
+            tiempoRestante = 0;
+            ActualizarTodoEnUI();
+
+            if (NivelActual < NivelesTotales)
             {
-                if (MainManager.Instance.modoHistoriaActivo)
-                {
-                    // Modo Historia: Puede seguir al siguiente nivel o salir al inicio.
-                    botonContinuar.SetActive(true);
-                    botonSalir.SetActive(true);
-                }
-                else
-                {
-                    // Modo Libre: Solo puede salir (vuelve al selector de minijuegos).
-                    botonContinuar.SetActive(false);
-                    botonSalir.SetActive(true);
-                }
+                TerminarFase();
+            }
+            else
+            {
+                GanarMinijuego();
             }
         }
     }
+
+    // =========================================================================
+    // ----------- GESTIÓN DE PUNTOS -----------
+    // =========================================================================
+    public void ItemRecogido(int puntosGanados)
+    {
+        if (juegoTerminado) return; // Si ya hemos muerto o terminado, ignoramos cualquier punto extra
+
+        puntosTotales += puntosGanados; // Sumamos al contador local de esta escena
+
+        // Informamos al MainManager para que él gestione el sonido y los puntos de "historia"
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.SumarPuntoTemporal(puntosGanados);
+        }
+
+        ActualizarTodoEnUI();
+    }
+
+    // =========================================================================
+    // ----------- GESTIÓN DE UI -----------
+    // =========================================================================
+    private void ActualizarTodoEnUI()
+    {
+        // Le pasamos los datos al UIManager para que él los dibuje
+        if (uiManager != null)
+        {
+            uiManager.ActualizarInterfaz(puntosTotales, tiempoRestante);
+        }
+    }
+
+    // =========================================================================
+    // ----------- TERMINAR NIVEL -----------
+    // =========================================================================
+    private void TerminarFase()
+    {
+        if (juegoTerminado) return;
+        juegoTerminado = true;
+
+        if (G2_LevelPanel != null) // Mostramos el panel de nivel completado y pausamos para que el jugador respire
+        {
+            G2_LevelPanel.SetActive(true);
+            Time.timeScale = 0f; // Pausa solo al mostrar el menú de "Nivel Completado"
+        }
+    }
+
+    // =========================================================================
+    // ----------- GANAR MINIJUEGO -----------
+    // =========================================================================
+    private void GanarMinijuego()
+    {
+        if (juegoTerminado) return; // Seguridad para no ejecutar la victoria varias veces
+        juegoTerminado = true; // Bloqueamos el estado del juego
+
+        if (G2_VictoryPanel != null)
+        {
+            G2_VictoryPanel.SetActive(true); // Encendemos el panel de victoria final
+            Time.timeScale = 0f; // Congelamos el movimiento del juego
+
+            // --- LÓGICA DE BOTONES SEGÚN EL MODO ---
+            if (MainManager.Instance != null)
+            {
+                // Si el modo historia está activo, permitimos "Continuar" a la siguiente escena
+                if (MainManager.Instance.modoHistoriaActivo)
+                {
+                    if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(true);
+                    if (G2_ButtonExit != null) G2_ButtonExit.SetActive(true);
+                }
+                else
+                {
+                    // Si es juego libre, ocultamos el botón de continuar
+                    if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(false);
+                    if (G2_ButtonExit != null) G2_ButtonExit.SetActive(true);
+                }
+            }
+        }
+
+        // Al ganar el minijuego completo, reseteamos los estáticos para la próxima vez
+        ResetCheckpoints();
+    }
+
+    // =========================================================================
+    // ----------- SIGUIENTE NIVEL -----------
+    // =========================================================================
+    public void NextLevel()
+    {
+        // 1. Antes de irnos, guardamos el progreso en los Checkpoints estáticos
+        NivelCheckpoint = NivelActual + 1; // Subimos el nivel
+        PuntosCheckpoint = puntosTotales;  // Mantenemos los puntos
+
+        // 2. IMPORTANTE: Ponemos el tiempo a 1 antes de recargar
+        Time.timeScale = 1f;
+
+        // 3. RECARGAMOS LA ESCENA
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    // =========================================================================
+    // ----------- SEGURIDAD -----------
+    // =========================================================================
+    public static void ResetCheckpoints()
+    {
+        // Función para limpiar los puntos estáticos (Llamar al salir al Menú)
+        NivelCheckpoint = 1;
+        PuntosCheckpoint = 0;
+    }
+
     private void OnDestroy()
     {
         Time.timeScale = 1f;
+    }
+
+    // =========================================================================
+    // ----------- GESTIÓN DE ESTADOS: GAME OVER -----------
+    // =========================================================================
+    public void Morir()
+    {
+        if (juegoTerminado) return;
+
+        juegoTerminado = true; // Detiene el cronómetro en el Update sin pausar el mundo
     }
 }

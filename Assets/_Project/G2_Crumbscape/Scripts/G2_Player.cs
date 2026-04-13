@@ -3,152 +3,131 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 // ==============================================================================
-// >>> G2_PLAYER: Controlador de movimiento y detección (Minijuego 2)
-// Este script gestiona el movimiento mediante el nuevo Input System y detecta
-// cuando el jugador colisiona con los items para avisar al GameManager local.
-// También gestiona la muerte del jugador
+// G2_PLAYER: Controlador de la nave del jugador
 // ==============================================================================
-
 public class G2_Player : MonoBehaviour
 {
     [Header("Configuración")]
-    public float flapForce = 4f;    
-    public GameObject explosionPrefab;
+    [SerializeField] private float flapForce = 4f;       // Fuerza del impulso hacia arriba al pulsar
+    [SerializeField] private GameObject explosionPrefab; // Prefab con el efecto de explosión
 
-    private G2_GameManager gameManager;
-    private PlayerInput playerInput;
-    private Rigidbody2D rb;
+    // ----------- REFERENCIAS INTERNAS -----------
+    private PlayerInput playerInput;       // Sistema de Input para detectar teclas/clics
+    private Rigidbody2D rb;                // Motor de físicas para mover la nave
+    private G2_UIManager uiManager;        // Script de la interfaz para los mensajes
+    private SpriteRenderer spriteRenderer; // La imagen de la nave (para color o apagarla)
+    private GameObject thrusterEffect;     // El fuego del motor (objeto hijo)
 
-    // Variables para muerte 
-    private float minHeight; 
-    private bool isDead = false;
-    private G2_UIManager uiManager;
-    public enum TipoMuerte { Caida, Choque }
-    private SpriteRenderer spriteRenderer;
-    private GameObject thrusterEffect;
+    // ----------- ESTADOS -----------
+    public bool isDead = false;              // Estado de vida (público para que el Alien lo vea)
+    public enum TipoMuerte { Caida, Choque } // Opciones de muerte para elegir el mensaje de UI
 
+    // ==========================================================================
+    // PREPARACIÓN INICIAL (Se ejecuta al nacer el objeto)
+    // ==========================================================================
     void Start()
     {
-        // -------- ASIGNACIÓN DE COMPONENTES --------
-        // Obtiene el componente PlayerInput que está en el mismo GameObject
-        playerInput = GetComponent<PlayerInput>();
+        // Guardamos los componentes para usarlos rápido después
+        rb = GetComponent<Rigidbody2D>();                // Componente de físicas
+        playerInput = GetComponent<PlayerInput>();       // Componente de controles
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Componente de imagen
 
-        // Buscamos el G2_GameManager.
-        gameManager = Object.FindAnyObjectByType<G2_GameManager>();
+        uiManager = Object.FindAnyObjectByType<G2_UIManager>(); // Buscamos el manager de la interfaz
 
-        // Obtiene el Rigidbody2D del objeto
-        rb = GetComponent<Rigidbody2D>();
+        Transform t = transform.Find("PlayerThruster"); // Buscamos el fuego del motor como hijo
+        if (t != null) { thrusterEffect = t.gameObject; } // Si existe, lo guardamos
 
-        // Buscamos el UI Manager en la escena para poder imprimir textos personalizados según muerte
-        uiManager = Object.FindAnyObjectByType<G2_UIManager>();
-
-        // Buscamos el spriteRenderer de la nave para cambiarle el color si muere por caída
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
-        Transform t = transform.Find("ThrusterEffect");
-        if (t != null) thrusterEffect = t.gameObject;
-
+        Time.timeScale = 1f; // Nos aseguramos de que el tiempo corra (por si venimos de un menú pausado)
     }
 
+    // ==========================================================================
+    // BUCLE DE LÓGICA (Update)
+    // ==========================================================================
     void Update()
     {
-        // -------- SALTO ---------
-        // Evita errores si el Input no está listo.
+        // FILTRO 1: Si el jugador ha muerto o el sistema de input falla, bloqueamos el control
         if (isDead || playerInput == null) return;
 
-        // Comprueba si la acción "Interact" se ha pulsado en ESTE frame
-        // WasPressedThisFrame = solo detecta el momento exacto del click
+        // FILTRO 2: Comprobamos si se ha pulsado la acción "Interact" en este frame
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
-            // 1. Resetear la velocidad vertical (importante)
-            // Pone la velocidad en Y a 0 antes de saltar. Esto evita que la gravedad acumulada anule el salto
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-
-            // 2. Aplicar el impulso hacia arriba (flapForce define la potencia del salto) (Impulse es un tipo de salto predefinido)
-            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse);
+            // Aplicamos el impulso:
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // Reset de velocidad vertical
+            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse); // Impulso instantáneo hacia arriba
         }
     }
 
-    // =========================================================================
-    // >>> DETECCIÓN DE TRIGGERS
-    // =========================================================================
+    // ==========================================================================
+    // DETECCIÓN DE COLISIONES
+    // ==========================================================================
     private void OnTriggerEnter2D(Collider2D otro)
     {
+        // FILTRO 1: Si ya estamos muertos, no procesamos más choques
         if (isDead) return;
-        // Buscamos objetos con el tad G2_Asteroid
+
+        // FILTRO 2: Comprobar qué objeto hemos tocado
         if (otro.CompareTag("G2_Asteroid"))
         {
-            OnDie(TipoMuerte.Choque);
+            OnDie(TipoMuerte.Choque); // Muerte por chocar contra asteroide
         }
-
-        // Buscamos objetos con los Tags "G2_Star" y "G2_Bread".
-        else if (otro.CompareTag("G2_Star") || otro.CompareTag("G2_Bread"))
-        {
-            otro.gameObject.SetActive(false); // Desactivamos el objeto para que vuelva al PoolManager
-
-            // COMUNICACIÓN CON EL MANAGER LOCAL:
-            if (gameManager != null)
-            {
-                gameManager.ItemRecogido();
-            }            
-        }
-
         else if (otro.CompareTag("G2_DeathZone"))
         {
-            OnDie(TipoMuerte.Caida);
+            OnDie(TipoMuerte.Caida);  // Muerte por salir de los límites
         }
     }
 
-    // =========================================================================
-    // >>> MUERTE
-    // =========================================================================
+    // ==========================================================================
+    // GESTIÓN DE LA MUERTE (OnDie)
+    // ==========================================================================
     void OnDie(TipoMuerte motivo)
     {
-        if (isDead) return;
-        isDead = true;
+        if (isDead) return; // Cláusula de seguridad
+        isDead = true;      // Marcamos que la nave ya no está operativa
 
-        if (explosionPrefab != null) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-
-        // Comunicamos al UI el TipoMuerte e imprime según tipo
-        if (uiManager != null)
+        // 1. AVISO AL MANAGER: Detenemos el cronómetro de nivel para no ganar por error
+        if (G2_GameManager.Instance != null)
         {
-            if (motivo == TipoMuerte.Caida)
-                uiManager.MostrarMensajeMuerteCaida();
-            else
-                uiManager.MostrarMensajeMuerteChoque();
+            G2_GameManager.Instance.Morir();
         }
 
-        // -------- EFECTOS VISUALES ---------
-        // 1. Pausamos la nave SIEMPRE (se queda congelada) y apagamos la animación del motor
+        // 2. FÍSICAS: Quitamos las colisiones para que la nave flote o caiga sin estorbar
         rb.simulated = false;
 
-        if (thrusterEffect != null)
+        // 3. FEEDBACK VISUAL:
+        // Solo creamos explosión si ha sido un choque (la caída es silenciosa)
+        if (motivo == TipoMuerte.Choque && explosionPrefab != null)
         {
-            thrusterEffect.SetActive(false);
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         }
 
-        // 2. Cambiamos el color o visibilidad según cómo muera
+        // Apagamos el fuego del motor siempre al morir
+        if (thrusterEffect != null) thrusterEffect.SetActive(false);
+
+        // Ajustamos la apariencia según cómo hayamos muerto
         if (spriteRenderer != null)
         {
             if (motivo == TipoMuerte.Caida)
-            {
-                // Si toca la zona de abajo, se queda congelada y se vuelve negra
-                spriteRenderer.color = Color.black;
-            }
+                spriteRenderer.color = Color.black; // Se vuelve negra (quemada)
             else
-            {
-                // Si choca con un asteroide, desaparece (apagamos el dibujo)
-                spriteRenderer.enabled = false;
-            }
+                spriteRenderer.enabled = false;     // Desaparece (pulverizada por la explosión)
         }
 
+        // 4. INTERFAZ: Mandamos el mensaje correspondiente al UIManager
+        if (uiManager != null)
+        {
+            if (motivo == TipoMuerte.Caida) uiManager.MostrarMensajeMuerteCaida();
+            else uiManager.MostrarMensajeMuerteChoque();
+        }
+
+        // 5. REINICIO: Esperamos 2 segundos para que el jugador vea el desastre y recargamos
         Invoke("ReiniciarNivel", 2f);
     }
 
+    // ==========================================================================
+    // REINICIAR NIVEL
+    // ==========================================================================
     void ReiniciarNivel()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name 
-        );
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Recargamos la escena actual para volver a intentarlo
     }
 }

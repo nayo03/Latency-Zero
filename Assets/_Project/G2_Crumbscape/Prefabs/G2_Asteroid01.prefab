@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 6
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: b500fb55811d1f445b29a567feeb2fcc, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8156863, g: 0.91708803, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589c62009781b6d4b8d1ffb39b5691a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_AsteroidController
-  speedX: 5
+  speedX: 1
   speedY: 0
   verticalRange: 0
   hasVerticalMovement: 0
