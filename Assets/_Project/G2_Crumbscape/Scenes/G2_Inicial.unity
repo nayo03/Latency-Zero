@@ -715,7 +715,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.054750443, y: -0.18202302}
+  m_Offset: {x: -0.054750443, y: -1.0508546}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -725,7 +725,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.9914026, y: 0.8392262}
+  m_Size: {x: 4.9914026, y: 0.4530787}
   m_EdgeRadius: 0
 --- !u!4 &474058795
 Transform:
@@ -736,7 +736,7 @@ Transform:
   m_GameObject: {fileID: 474058793}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.26, z: 0}
+  m_LocalPosition: {x: 0, y: -4.16, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -792,7 +792,7 @@ SpriteRenderer:
   m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 451ca10b9450b4a41b67a0cfe1cb9294, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.21176471}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.07058824}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1020,7 +1020,7 @@ Transform:
   m_GameObject: {fileID: 569389565}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1070,7 +1070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9408350d890257d4ea252211d18565ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_GameManager
-  tiempoNivel: 10
+  tiempoNivel: 30
   NivelActual: 1
   NivelesTotales: 3
   uiManager: {fileID: 1091717380}
@@ -1115,7 +1115,7 @@ MonoBehaviour:
   - {fileID: 5699286301317918703, guid: 9eba71bcd17d47445909c5fb1b5846f6, type: 3}
   asteroidsAmount: 3
   starPrefab: {fileID: 6975186039267839952, guid: 5f7123d35027acc48b6ba4d623f2117e, type: 3}
-  starsAmount: 2
+  starsAmount: 3
   breadPrefab: {fileID: 7363365987993140626, guid: bfb9d230737bbb5458da49afe63ef22e, type: 3}
   breadsAmount: 3
 --- !u!4 &734853840
@@ -2106,7 +2106,7 @@ Transform:
   m_GameObject: {fileID: 1191653501}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.18, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2649,15 +2649,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea541cfc9d9cff4aa9a8aa7f800f216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_Spawner
-  asteroidSpawnRate: 2
-  starSpawnRate: 4
+  asteroidSpawnRate: 1.5
+  starSpawnRate: 2
   breadSpawnRate: 7
-  colRangoNivel1: 0.3
-  colRangoNivel2: 0.55
-  colRangoNivel3: 0.8
-  astLimiteBordes: 0.95
-  zonaSeguraNivel1: 0.5
-  zonaSeguraNivel2: 0.3
+  colRangoNivel1: 0.5
+  colRangoNivel2: 0.7
+  colRangoNivel3: 0.9
+  astLimiteBordes: 0.8
+  zonaSeguraNivel1: 0.3
+  zonaSeguraNivel2: 0.25
   zonaSeguraNivel3: 0.15
   gameManager: {fileID: 714744283}
 --- !u!4 &1418207979
@@ -2796,7 +2796,7 @@ Transform:
   m_GameObject: {fileID: 1581282167}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7, y: 1, z: 0}
+  m_LocalPosition: {x: -0.7, y: 0, z: 0}
   m_LocalScale: {x: 0.35, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3173,7 +3173,7 @@ Transform:
   m_GameObject: {fileID: 1812500689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.6, z: 0}
+  m_LocalPosition: {x: 0, y: -4.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3462,7 +3462,7 @@ Transform:
   m_GameObject: {fileID: 2042164454}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 4.15, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

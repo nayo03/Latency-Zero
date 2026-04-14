@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 8
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 06c37c553e832924f81c43c782053b7a, type: 3}
-  m_Color: {r: 0.8877358, g: 0.7688679, b: 1, a: 1}
+  m_Color: {r: 0.8111158, g: 0.61960787, b: 0.93333334, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -108,9 +108,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::G2_AsteroidController
   speedX: 2
   speedY: 1.5
-  verticalRange: 1.1
+  verticalRange: 0.8
   hasVerticalMovement: 1
-  rotationSpeed: 70
+  rotationSpeed: 65
+  puntoDeDespawn: -5
 --- !u!50 &-4691780528328533542
 Rigidbody2D:
   serializedVersion: 5

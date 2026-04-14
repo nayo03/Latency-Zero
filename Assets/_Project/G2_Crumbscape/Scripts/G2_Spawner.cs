@@ -18,7 +18,7 @@ public class G2_Spawner : MonoBehaviour
     [SerializeField] private float breadSpawnRate = 7f;    // Segundos entre panes
 
     // ----------- ZONAS DE SPAWN COLLECTIBLES -----------
-    [Header("Zonas de Spawn: COLECCIONABLES (rangos calculados desde el centro de la pantalla)")]
+    [Header("Zonas de Spawn: COLECCIONABLES")] // (rangos calculados desde el centro de la pantalla)
     [Tooltip("Nivel 1: Muy cerca del centro")]
     [SerializeField] private float colRangoNivel1 = 0.30f;
     [Tooltip("Nivel 2: Apertura media")]

@@ -142,7 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 632a158e4311a6146a90baf925ffbb27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_CollectibleController
-  speedX: 3
+  speedX: 2.5
   StarsEffectPrefab: {fileID: 6421028116159756588, guid: 77fb7ee97756a16438cf6d426f527795, type: 3}
   points: 10
   isCosmicBread: 1
+  attractionRange: 1
+  magnetSpeed: 5

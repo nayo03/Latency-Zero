@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 7
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 06170be8a58e31144a2fb3652f12d076, type: 3}
-  m_Color: {r: 0.8537736, g: 0.8730269, b: 1, a: 1}
+  m_Color: {r: 0.71359, g: 0.7019608, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -110,7 +110,8 @@ MonoBehaviour:
   speedY: 1.5
   verticalRange: 1
   hasVerticalMovement: 1
-  rotationSpeed: 60
+  rotationSpeed: 65
+  puntoDeDespawn: -5
 --- !u!50 &3903388818316712748
 Rigidbody2D:
   serializedVersion: 5
