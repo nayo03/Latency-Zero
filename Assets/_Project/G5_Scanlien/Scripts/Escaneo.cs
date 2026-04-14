@@ -1,29 +1,37 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GazeInteraction : MonoBehaviour
 {
     public float maxDistance = 1.0f;    // Distancia máxima (1 metro)
     public float gazeDuration = 3.0f;   // Tiempo necesario (3 segundos)
 
+    [Header("UI de Progresión")]
+    public Slider barraProgreso;
+
     private float timer = 0f;
     private GameObject currentTarget;
-    private int score = 0;              // Tu contador
 
+    void Start()
+    {
+        // Asegurarnos de que la barra empiece oculta
+        if (barraProgreso != null) barraProgreso.gameObject.SetActive(false);
+    }
     void Update()
     {
-        // Lanzamos un rayo desde el centro de la cámara hacia adelante
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
-            // Verificamos si el objeto tiene el tag "Interactable" (o el que prefieras)
             if (hit.collider.CompareTag("Interactable"))
             {
-                // Si es el mismo objeto que el frame anterior, aumentamos el tiempo
                 if (currentTarget == hit.collider.gameObject)
                 {
                     timer += Time.deltaTime;
+
+                    // Actualizar la barra de progreso
+                    ActualizarBarra();
 
                     if (timer >= gazeDuration)
                     {
@@ -32,20 +40,29 @@ public class GazeInteraction : MonoBehaviour
                 }
                 else
                 {
-                    // Si miramos a un objeto interactuable nuevo, reiniciamos
                     ResetTimer(hit.collider.gameObject);
                 }
             }
             else
             {
-                // Si el rayo toca algo que NO es interactuable
                 ResetTimer(null);
             }
         }
         else
         {
-            // Si el rayo no toca nada en el rango de 1 metro
             ResetTimer(null);
+        }
+    }
+
+    void ActualizarBarra()
+    {
+        if (barraProgreso != null)
+        {
+            // Activamos la barra si estamos mirando un objetivo
+            if (!barraProgreso.gameObject.activeSelf) barraProgreso.gameObject.SetActive(true);
+
+            // Calculamos el porcentaje (de 0 a 1)
+            barraProgreso.value = timer / gazeDuration;
         }
     }
 
@@ -66,5 +83,12 @@ public class GazeInteraction : MonoBehaviour
     {
         timer = 0f;
         currentTarget = newTarget;
+
+        // Ocultar y resetear la barra al dejar de mirar
+        if (barraProgreso != null)
+        {
+            barraProgreso.value = 0f;
+            barraProgreso.gameObject.SetActive(false);
+        }
     }
 }

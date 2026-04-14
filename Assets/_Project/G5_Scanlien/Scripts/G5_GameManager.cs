@@ -68,18 +68,25 @@ public class G5_GameManager : MonoBehaviour
 
     void Update()
     {
+        // 1. Si el juego ya terminó (ganaste o perdiste), no hacemos nada más
         if (juegoTerminado) return;
 
-        // Gestión del tiempo
+        // 2. Si todavía hay tiempo...
         if (tiempoRestante > 0)
         {
             tiempoRestante -= Time.deltaTime;
-            ActualizarInterfazTiempo();
-        }
-        else
-        {
-            tiempoRestante = 0;
-            PerderPorTiempo();
+
+            // 3. Si el cálculo nos pasó por debajo de 0, lo clavamos en 0
+            if (tiempoRestante <= 0)
+            {
+                tiempoRestante = 0;
+                ActualizarInterfazTiempo(); // Actualiza el texto a 00:00 una última vez
+                PerderPorTiempo();
+            }
+            else
+            {
+                ActualizarInterfazTiempo();
+            }
         }
     }
 
@@ -91,7 +98,7 @@ public class G5_GameManager : MonoBehaviour
             int segundos = Mathf.FloorToInt(tiempoRestante % 60);
             textoCronometro.text = string.Format("{0:00}:{1:00}", minutos, segundos);
 
-            // Opcional: Poner el texto en rojo si queda poco tiempo
+            
             if (tiempoRestante < 30) textoCronometro.color = Color.red;
         }
     }
