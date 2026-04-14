@@ -167,6 +167,7 @@ public class G5_GameManager : MonoBehaviour
 
     private void GanarMinijuego()
     {
+        juegoTerminado = true;  
         if (panelVictoria != null)
         {
             panelVictoria.SetActive(true);
