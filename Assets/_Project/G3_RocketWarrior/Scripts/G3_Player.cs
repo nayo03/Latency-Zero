@@ -1,50 +1,106 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Necesario para usar PlayerInput
+using System.Collections;
 
 public class G3_Player : MonoBehaviour
 {
     [Header("Movimiento")]
-    public float velocidad = 5f; // Qué tan rápido se mueve la nave. Lo puedes cambiar desde el Inspector
+    public float velocidad = 5f;
 
-    private PlayerInput _playerInput;     // Referencia al componente PlayerInput que acabas de añadir
-    private Vector2 _inputMovimiento;     // Guarda hacia dónde está moviendo el jugador (ej: arriba-derecha = (1,1))
-    private Vector2 _minBounds;           // Límite inferior-izquierdo de la pantalla en coordenadas de mundo
-    private Vector2 _maxBounds;           // Límite superior-derecho de la pantalla en coordenadas de mundo
+    [Header("Disparo")]
+    public GameObject prefabBala;             // Arrastra aquí el prefab BalaJugador
+    public float tiempoEntreDisparos = 0.3f;  // Segundos entre cada disparo automático
+    public Transform puntoDisparo;            // Punto desde donde sale la bala
 
-    void Start() // Se ejecuta UNA vez al arrancar la escena
+    [Header("Vidas")]
+    public int vidas = 3;                     // Vidas iniciales del jugador
+
+    private Vector2 _minBounds;               // Límite inferior-izquierdo de la pantalla
+    private Vector2 _maxBounds;               // Límite superior-derecho de la pantalla
+    private float _timerDisparo;              // Contador regresivo para el disparo
+    private bool _invencible = false;         // Evita recibir daño varias veces seguidas
+    private float _tiempoInvencible = 1.5f;   // Segundos de invencibilidad tras recibir daño
+
+    void Start()
     {
-        // Buscamos el PlayerInput en este mismo GameObject
-        _playerInput = GetComponent<PlayerInput>();
-       // _playerInput.actions.FindActionMap("Player").Enable();
-
-        // Calculamos los bordes de la pantalla para que la nave no salga
+        // Calculamos los límites de la pantalla
         Camera cam = Camera.main;
-        float margen = 0.3f; // Un pequeño margen para que no quede pegado al borde
-        _minBounds = cam.ViewportToWorldPoint(new Vector2(0, 0)); // Esquina inferior izquierda
-        _maxBounds = cam.ViewportToWorldPoint(new Vector2(1, 1)); // Esquina superior derecha
-        _minBounds += Vector2.one * margen; // Aplicamos el margen
+        float margen = 0.3f;
+        _minBounds = cam.ViewportToWorldPoint(new Vector2(0, 0));
+        _maxBounds = cam.ViewportToWorldPoint(new Vector2(1, 1));
+        _minBounds += Vector2.one * margen;
         _maxBounds -= Vector2.one * margen;
+
+        // Empezamos el timer a 0 para que dispare nada más empezar
+        _timerDisparo = 0f;
     }
 
-    void Update() // Se ejecuta CADA FRAME (60 veces por segundo aprox)
+    void Update()
     {
-        if (_playerInput == null) return; // Seguridad: si no hay PlayerInput, no hace nada
-
-        // Le preguntamos al PlayerInput qué está haciendo el jugador
-        // "Move" es el nombre de la acción que definiremos en el Action Asset
-        _inputMovimiento = _playerInput.actions["Move"].ReadValue<Vector2>();
-
-        // Convertimos ese input en movimiento 3D (Z=0 porque es 2D)
-        Vector3 mov = new Vector3(_inputMovimiento.x, _inputMovimiento.y, 0);
-
-        // Movemos la nave: posición actual + dirección * velocidad * tiempo
-        // Time.deltaTime hace que el movimiento sea igual independientemente de los FPS
+        // MOVIMIENTO
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+        Vector3 mov = new Vector3(x, y, 0).normalized;
         transform.position += mov * velocidad * Time.deltaTime;
 
-        // Limitamos la posición a los bordes calculados en Start()
-        float x = Mathf.Clamp(transform.position.x, _minBounds.x, _maxBounds.x);
-        float y = Mathf.Clamp(transform.position.y, _minBounds.y, _maxBounds.y);
-        transform.position = new Vector3(x, y, 0);
-        //Debug.Log("Input: " + _inputMovimiento);
+        // Limitamos a los bordes de la pantalla
+        float clampX = Mathf.Clamp(transform.position.x, _minBounds.x, _maxBounds.x);
+        float clampY = Mathf.Clamp(transform.position.y, _minBounds.y, _maxBounds.y);
+        transform.position = new Vector3(clampX, clampY, 0);
+
+        // DISPARO AUTOMÁTICO
+        _timerDisparo -= Time.deltaTime;
+        if (_timerDisparo <= 0f)
+        {
+            Disparar();
+            _timerDisparo = tiempoEntreDisparos;
+        }
+    }
+
+    private void Disparar()
+    {
+        if (prefabBala != null)
+        {
+            // Instanciamos la bala en el punto de disparo o en la posición del jugador
+            Vector3 pos = puntoDisparo != null ? puntoDisparo.position : transform.position;
+            Instantiate(prefabBala, pos, Quaternion.identity);
+        }
+    }
+
+    public void RecibirDaño()
+    {
+        // Si está en periodo de invencibilidad no recibe daño
+        if (_invencible) return;
+
+        vidas--;
+        G3_GameManager.Instance.ActualizarVidas(vidas);
+        Debug.Log("Vidas restantes: " + vidas);
+
+        if (vidas <= 0)
+        {
+            // Sin vidas — avisamos al GameManager
+            G3_GameManager.Instance.PerderPartida();
+        }
+        else
+        {
+            // Activamos invencibilidad temporal
+            StartCoroutine(PeriodoInvencibilidad());
+        }
+    }
+
+    private IEnumerator PeriodoInvencibilidad()
+    {
+        _invencible = true;
+        // Esperamos el tiempo de invencibilidad
+        yield return new WaitForSeconds(_tiempoInvencible);
+        _invencible = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D otro)
+    {
+        // Recibe daño si le toca una bala enemiga o un enemigo directamente
+        if (otro.CompareTag("BalaEnemigo") || otro.CompareTag("Enemy"))
+        {
+            RecibirDaño();
+        }
     }
 }
