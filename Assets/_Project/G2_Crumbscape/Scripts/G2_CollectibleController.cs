@@ -50,6 +50,8 @@ public class G2_CollectibleController : MonoBehaviour
     // ==========================================================================
     void Update()
     {
+        if (Time.timeScale == 0) return; // Por si se pausa el juego
+
         // 1. MOVIMIENTO BASE: Siempre se desplaza a la izquierda
         transform.Translate(Vector2.left * speedX * Time.deltaTime, Space.World);
 

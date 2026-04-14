@@ -88,7 +88,8 @@ public class G2_Spawner : MonoBehaviour
     IEnumerator SpawnStarsRoutine()
     {
         while (true)
-        {            
+        {
+            if (Time.timeScale == 0) { yield return null; continue; } // Por si se pausa el juego
             yield return new WaitForSeconds(starSpawnRate); // Espera los segundos configurados en 'starSpawnRate'
 
             // Le pedimos al PoolManager que nos preste una Estrella que no se esté usando
@@ -114,6 +115,7 @@ public class G2_Spawner : MonoBehaviour
     {
         while (true)
         {
+            if (Time.timeScale == 0) { yield return null; continue; } // Por si se pausa el juego
             yield return new WaitForSeconds(breadSpawnRate); // Espera los segundos configurados en 'breadSpawnRate'
 
             // Le pedimos al PoolManager que nos preste un Pan que no se esté usando
@@ -139,6 +141,7 @@ public class G2_Spawner : MonoBehaviour
     {
         while (true)
         {
+            if (Time.timeScale == 0) { yield return null; continue; } // Por si se pausa el juego
             yield return new WaitForSeconds(asteroidSpawnRate);
 
             // ----------- DETERMINAR DIFICULTAD ACTUAL -----------

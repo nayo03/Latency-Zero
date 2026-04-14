@@ -40,6 +40,8 @@ public class G2_AsteroidController : MonoBehaviour
     // ==========================================================================
     void Update()
     {
+        if (Time.timeScale == 0) return; // Por si se pausa el juego
+
         // 1. MOVIMIENTO HORIZONTAL
         // Desplazamos hacia la izquierda usando Space.World para ignorar rotaciones locales
         transform.Translate(Vector2.left * speedX * Time.deltaTime, Space.World);

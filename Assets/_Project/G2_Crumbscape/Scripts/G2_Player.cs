@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 // ==============================================================================
 // G2_PLAYER: Controlador de la nave del jugador
@@ -36,8 +37,7 @@ public class G2_Player : MonoBehaviour
 
         Transform t = transform.Find("PlayerThruster"); // Buscamos el fuego del motor como hijo
         if (t != null) { thrusterEffect = t.gameObject; } // Si existe, lo guardamos
-
-        Time.timeScale = 1f; // Nos aseguramos de que el tiempo corra (por si venimos de un menú pausado)
+        
     }
 
     // ==========================================================================
@@ -48,12 +48,22 @@ public class G2_Player : MonoBehaviour
         // FILTRO 1: Si el jugador ha muerto o el sistema de input falla, bloqueamos el control
         if (isDead || playerInput == null) return;
 
-        // FILTRO 2: Comprobamos si se ha pulsado la acción "Interact" en este frame
+        // FILTRO 2. Si el juego está pausado, no permitimos NI el salto NI el límite del techo
+        if (Time.timeScale == 0) return; 
+
+        // LÓGICA DE SALTO: Comprobamos si se ha pulsado la acción "Interact" en este frame
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
-            // Aplicamos el impulso:
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // Reset de velocidad vertical
-            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse); // Impulso instantáneo hacia arriba
+            // Salto.
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse);
+        }
+
+        // 4. Límite del techo (Solo funciona si el juego ha empezado)
+        if (transform.position.y > 5.0f)
+        {
+            transform.position = new Vector3(transform.position.x, 5.0f, transform.position.z);
+            if (rb.linearVelocity.y > 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         }
     }
 

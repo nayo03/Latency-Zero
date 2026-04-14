@@ -71,6 +71,16 @@ public class G2_UIManager : MonoBehaviour
     // ==========================================================================
     // BOTONES DEL G2_LevelPanel
     // ==========================================================================
+    // ------------------ BOTÓN START ------------------
+    public void Boton_Start()
+    {
+        if (G2_GameManager.Instance != null)
+        {
+            G2_GameManager.Instance.IniciarJuego();
+        }
+    }
+
+    // ------------------ BOTÓN NEXT LEVEL ------------------
     public void Boton_NextLevel()
     {
         // Buscamos el GameManager para ejecutar la transición de nivel (Nivel 1 -> 2, etc.)

@@ -25,6 +25,7 @@ public class G2_GameManager : MonoBehaviour
     private float tiempoRestante;           // El reloj interno que descuenta segundos
     private bool juegoTerminado = false;    // Si es true, detiene el reloj y la suma de puntos
     private int puntosTotales = 0;          // Puntos acumulados en la partida actual
+    private bool juegoIniciado = false;
 
     [SerializeField] public int NivelActual = 1; // Nivel que estamos jugando (público para el Spawner)
     public int NivelesTotales = 3;               // Cuántos niveles hay que pasar para ganar
@@ -32,8 +33,9 @@ public class G2_GameManager : MonoBehaviour
     // ----------- REFERENCIAS INTERNAS -----------
     [Header("Referencias UI y Paneles")]
     [SerializeField] private G2_UIManager uiManager; // Acceso al script que dibuja los textos en pantalla
-    public GameObject G2_VictoryPanel;               // Panel que se activa al completar el nivel final
+    public GameObject G2_StartPanel;                 // Panel de inicio
     public GameObject G2_LevelPanel;                 // Panel de transición entre niveles
+    public GameObject G2_VictoryPanel;               // Panel que se activa al completar el nivel final     
 
     [Header("Botones de Victoria Final")]
     public GameObject G2_ButtonContinue;             // Botón que solo sale si estamos en Modo Historia
@@ -58,8 +60,24 @@ public class G2_GameManager : MonoBehaviour
         tiempoRestante = tiempoNivel;
         Time.timeScale = 1f;
 
-        // 4. Dibujamos los datos iniciales en la interfaz
+        // 4. Inicio
+        if (NivelActual == 1 && G2_StartPanel != null)
+        {
+            G2_StartPanel.SetActive(true);
+            juegoIniciado = false;
+            Time.timeScale = 0f; // Pausa total al inicio
+        }
+        else
+        {
+            if (G2_StartPanel != null) G2_StartPanel.SetActive(false);
+            juegoIniciado = true;
+            Time.timeScale = 1f;
+        }
+
+        // 5. Dibujamos los datos iniciales en la interfaz
         ActualizarTodoEnUI();
+
+
     }
 
     // ==========================================================================
@@ -67,7 +85,7 @@ public class G2_GameManager : MonoBehaviour
     // ==========================================================================
     void Update()
     {
-        if (juegoTerminado) return; // Si el jugador ha muerto o hemos ganado, dejamos de descontar tiempo
+        if (!juegoIniciado || juegoTerminado) return;
 
         // Cuenta atrás del cronómetro
         if (tiempoRestante > 0)
@@ -88,6 +106,33 @@ public class G2_GameManager : MonoBehaviour
             else
             {
                 GanarMinijuego();
+            }
+        }
+    }
+
+    // =========================================================================
+    // ----------- GESTIÓN DE INICIO -----------
+    // =========================================================================
+    public void IniciarJuego()
+    {
+        // 1. Activamos el tiempo
+        Time.timeScale = 1f;
+
+        // 2. Marcamos que ha iniciado
+        juegoIniciado = true;
+
+        // 3. Desactivamos el panel
+        if (G2_StartPanel != null) G2_StartPanel.SetActive(false);
+
+        // 4. Forzamos a que la nave no se duerma
+        G2_Player player = FindAnyObjectByType<G2_Player>();
+        if (player != null)
+        {
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.simulated = true; // Aseguramos que esté simulando
+                rb.WakeUp();
             }
         }
     }
