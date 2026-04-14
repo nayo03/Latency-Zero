@@ -1,10 +1,11 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 // ==============================================================================
 // >>> G1_GAMEMANAGER: Controlador específico del Minijuego 1
-// Este es el "cerebro" local de vuestro nivel. Se encarga de contar los items
+// Este es el "cerebro" local de vuestro nivel. Se encarga de contar los intentos
 // y avisar al MainManager (el motor global) cuando ganamos.
 /* ---------------------------------------------------------------------------------
    NOTAS BÁSICAS  
@@ -29,46 +30,181 @@ using UnityEngine.Rendering.Universal;
 public class G1_GameManager : MonoBehaviour
 {
     // VARIABLES
-    public int itemsParaGanar = 2; 
+    [Header("Configuración de Reglas")]
+    public int intentosMaximos = 5;
+
+    [Header("Referencias del Nivel")]
+    public DeadlightController controladorAguja;
+    public TextMeshProUGUI textoPuntuaciónFinal;
+
+    [Header("Interfaz Local")]
     public TextMeshProUGUI textoUI;
     public GameObject panelVictoria;
+    public GameObject botonContinuar;
+    public GameObject botonSalir;
 
-    [Header("Botones de Victoria")]
-    public GameObject botonContinuar; 
-    public GameObject botonSalir;    
-
-    private int itemsActuales = 0;
+    private int intentosActuales = 0;
     private int puntosTotales = 0;
 
-    public void ItemRecogido() // Se llama desde el script del player cuando colisiona con un item
-                               
+    [System.Serializable]
+    public struct DificultadIntento
     {
-        itemsActuales++;
-        puntosTotales += 5;
+        public string nombre;
+        public float velocidad;
+        public float minPerfect;
+        public float maxPerfect;
+        public float minGood;
+        public float maxGood;
+    }
+
+    [Header("Configuración de Progresión")]
+    public DificultadIntento[] nivelesDificultad;
+
+    private void Start()
+    {
+        intentosMaximos = nivelesDificultad.Length;
+        ActualizarDificultadJuego();
+    }
+    private void ActualizarDificultadJuego()
+    {
+        if (intentosActuales < nivelesDificultad.Length)
+        {
+            DificultadIntento configActual = nivelesDificultad[intentosActuales];
+
+            controladorAguja.switchDifficulty(
+                configActual.velocidad,
+                configActual.minPerfect,
+                configActual.maxPerfect,
+                configActual.minGood,
+                configActual.maxGood
+            );
+        }
+
+    }
+
+    [Header("Paramentros Nivel Secreto")]
+    public TextMeshProUGUI textoTimer;
+    public float tiempoSmasher = 5.0f;
+    public GameObject finalSecreto;
+    public int puntosPorSmash = 100;
+
+    private int clicksSmasher = 0;
+    private bool maxSmasherActivado = false;
+    public int puntosParaNivelSecreto = 200;
+
+    private void OnEnable()
+    {
+        // Sincronization with DeadlightController: Subscribe to the OnTryComplete event to receive updates on attempts
+        DeadlightController.OnTryComplete += ProcesarIntento;
+    }
+    private void OnDisable()
+    {
+        // Unsynchronization with DeadlightController: Unsubscribe from the OnTryComplete event to prevent memory leaks and unintended behavior when this object is disabled
+        DeadlightController.OnTryComplete -= ProcesarIntento;
+    }
+
+    // 
+    private void ProcesarIntento(int punctuation)
+    {
+        intentosActuales++;
+        puntosTotales += punctuation;
 
         if (textoUI != null)
         {
-            textoUI.text = "Puntos: " + puntosTotales; // Actualización del marcador en la interfaz del minijuego
+            textoUI.text = "Puntos: " + puntosTotales;
         }
 
-        if (MainManager.Instance != null) // Comunicación con el Core: Se añade al registro temporal de puntos del MainManager
+        // Sent to MainManager the points obtained in this attempt
+        if (MainManager.Instance != null)
         {
-            MainManager.Instance.SumarPuntoTemporal(5); // Almacena el valor en el registro de sesión actual (no persistente aún) 
+            MainManager.Instance.SumarPuntoTemporal(punctuation);
         }
 
-        if (itemsActuales >= itemsParaGanar) // Verificación de condición de victoria por recolección
+        if (intentosActuales < intentosMaximos)
         {
-            GanarMinijuego();
+            ActualizarDificultadJuego();
+        }
+        else if (intentosActuales == intentosMaximos && puntosTotales >= puntosParaNivelSecreto)
+        {
+            StartCoroutine(ActivarNivelSecreto());
+        }
+        else
+        {
+            TerminarMinijuego();
         }
     }
 
-    private void GanarMinijuego()
+    private IEnumerator ActivarNivelSecreto()
     {
+        controladorAguja.SwitchOffNeedle();
+        yield return new WaitForSeconds(1f);
+
+        finalSecreto.SetActive(true);
+        maxSmasherActivado = true;
+        clicksSmasher = 0;
+
+        float timer = tiempoSmasher;
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            textoTimer.text = "¡Pressiona el espacio Rápido!" + timer.ToString("F1") + "s";
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                RegistrarClickSmasher();
+            }
+            yield return null;
+        }
+        FinalizarNivelSecreto();
+    }
+
+    private void RegistrarClickSmasher()
+    {
+        if (maxSmasherActivado)
+        {
+            clicksSmasher++;
+            puntosTotales += puntosPorSmash;
+
+            if (MainManager.Instance != null)
+            {
+                MainManager.Instance.SumarPuntoTemporal(puntosPorSmash);
+            }
+
+            if (textoUI != null)
+            {
+                textoUI.text = "Puntos: " + puntosTotales;
+            }
+
+        }
+    }
+
+    private void FinalizarNivelSecreto()
+    {
+        maxSmasherActivado = false;
+        finalSecreto.SetActive(false);
+
+        Debug.Log("Puntos extra por clicks: " + clicksSmasher * puntosPorSmash);
+        TerminarMinijuego();
+    }
+
+    private void TerminarMinijuego()
+    {
+        if (controladorAguja != null)
+        {
+            controladorAguja.SwitchOffNeedle();
+        }
+
+        if (textoPuntuaciónFinal != null)
+        {
+            textoPuntuaciónFinal.text = "Puntuación Final: " + puntosTotales;
+        }
+
         if (panelVictoria != null)
         {
             panelVictoria.SetActive(true); // Habilita el canvas de resultados
             // Gestión del Cursor (del ratón): Se habilita para permitir la interacción con la UI
-            Cursor.visible = true; 
+            panelVictoria.SetActive(true);
+            Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None; // Estado del ratón: se mueve de forma normal (None)
 
             // DETERMINACIÓN DEL FLUJO DE SALIDA SEGÚN EL MODO DE JUEGO
