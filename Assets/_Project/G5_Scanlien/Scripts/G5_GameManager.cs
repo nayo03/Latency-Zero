@@ -29,8 +29,10 @@ using UnityEngine.XR.Management;
 public class G5_GameManager : MonoBehaviour
 {
     [Header("Configuración de Juego")]
-    public int itemsParaGanar = 2;
+    public int itemsParaGanar = 4;
     public TextMeshProUGUI textoPuntos;
+    public TextMeshProUGUI textoItemsPrincipales;
+    public TextMeshProUGUI textoItemsSecundarios;
     public GameObject panelVictoria;
 
     [Header("Configuración de Tiempo")]
@@ -43,8 +45,9 @@ public class G5_GameManager : MonoBehaviour
     public GameObject botonSalir;
 
     private int itemsActuales = 0;
+    private int itemsSecundariosActuales = 0;
     private int puntosTemporalesG5 = 0;
-    private bool juegoTerminado = false;
+    public bool juegoTerminado = false;
 
     private void Awake()
     {
@@ -68,15 +71,15 @@ public class G5_GameManager : MonoBehaviour
 
     void Update()
     {
-        // 1. Si el juego ya terminó (ganaste o perdiste), no hacemos nada más
+        
         if (juegoTerminado) return;
 
-        // 2. Si todavía hay tiempo...
+        
         if (tiempoRestante > 0)
         {
             tiempoRestante -= Time.deltaTime;
 
-            // 3. Si el cálculo nos pasó por debajo de 0, lo clavamos en 0
+            
             if (tiempoRestante <= 0)
             {
                 tiempoRestante = 0;
@@ -125,19 +128,41 @@ public class G5_GameManager : MonoBehaviour
     public void ItemRecogido()
     {
         itemsActuales++;
-        puntosTemporalesG5 += 20;
+        puntosTemporalesG5 += 100;
 
         if (textoPuntos != null)
             textoPuntos.text = "Puntos: " + puntosTemporalesG5;
 
+        if (textoItemsPrincipales != null)
+            textoItemsPrincipales.text = "Items principales: " + itemsActuales + " / 4";
+
+        if (itemsActuales >= 4)
+            textoItemsPrincipales.color = Color.blue;
+
         // Registro global de puntos
         if (MainManager.Instance != null)
-            MainManager.Instance.SumarPuntoTemporal(20);
+            MainManager.Instance.SumarPuntoTemporal(100);
 
         if (itemsActuales >= itemsParaGanar)
         {
             GanarMinijuego();
         }
+    }
+
+    public void ItemSecundarioRecogido()
+    {
+        itemsSecundariosActuales++;
+        puntosTemporalesG5 += 50;
+
+        if (textoPuntos != null)
+            textoPuntos.text = "Puntos: " + puntosTemporalesG5;
+
+        if (textoItemsSecundarios != null)
+            textoItemsSecundarios.text = "Items secundarios: " + itemsSecundariosActuales + " / 12";
+        if (itemsSecundariosActuales  >= 12)
+            textoItemsSecundarios.color = Color.blue;
+        if (MainManager.Instance != null)
+            MainManager.Instance.SumarPuntoTemporal(50);
     }
 
     private void GanarMinijuego()

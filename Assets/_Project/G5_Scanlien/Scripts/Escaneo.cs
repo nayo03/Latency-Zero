@@ -3,8 +3,9 @@ using UnityEngine.UI;
 
 public class GazeInteraction : MonoBehaviour
 {
-    public float maxDistance = 1.0f;    // Distancia máxima (1 metro)
+    public float maxDistance = 2.0f;    // Distancia máxima (1 metro)
     public float gazeDuration = 3.0f;   // Tiempo necesario (3 segundos)
+    public float gazeDurationSec = 1.5f; // Tiempo necesario (1.5 segundos)
 
     [Header("UI de Progresión")]
     public Slider barraProgreso;
@@ -43,10 +44,26 @@ public class GazeInteraction : MonoBehaviour
                     ResetTimer(hit.collider.gameObject);
                 }
             }
-            else
+            else if (hit.collider.CompareTag("InteractableSec"))
             {
-                ResetTimer(null);
+                if (currentTarget == hit.collider.gameObject)
+                {
+                    timer += Time.deltaTime;
+
+                    // Actualizar la barra de progreso
+                    ActualizarBarra();
+
+                    if (timer >= gazeDurationSec)
+                    {
+                        InteractSec(hit.collider.gameObject);
+                    }
+                }
+                else
+                {
+                    ResetTimer(hit.collider.gameObject);
+                }
             }
+            else { ResetTimer(null); }
         }
         else
         {
@@ -61,8 +78,11 @@ public class GazeInteraction : MonoBehaviour
             // Activamos la barra si estamos mirando un objetivo
             if (!barraProgreso.gameObject.activeSelf) barraProgreso.gameObject.SetActive(true);
 
+            if (currentTarget.CompareTag("Interactable")) barraProgreso.value = timer / gazeDuration;
+
+            if (currentTarget.CompareTag("InteractableSec")) barraProgreso.value = timer / gazeDurationSec;
             // Calculamos el porcentaje (de 0 a 1)
-            barraProgreso.value = timer / gazeDuration;
+
         }
     }
 
@@ -72,6 +92,19 @@ public class GazeInteraction : MonoBehaviour
         if (manager != null)
         {
             manager.ItemRecogido();
+        }
+
+        Destroy(target);
+        timer = 0f;
+        currentTarget = null;
+    }
+
+    void InteractSec(GameObject target)
+    {
+        G5_GameManager manager = Object.FindAnyObjectByType<G5_GameManager>();
+        if (manager != null)
+        {
+            manager.ItemSecundarioRecogido();
         }
 
         Destroy(target);
