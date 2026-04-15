@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - Interactable
+  - InteractableSec
   - G2_DeathZone
   - G2_Asteroid
   - G2_Star
