@@ -1,71 +1,60 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// ==============================================================================
-// >>> G4_PLAYER: Controlador de movimiento y detecciÛn (Minijuego 4 - AR)
-// Gestiona el movimiento mediante el Input System y detecta la recolecciÛn 3D.
-/* ---------------------------------------------------------------------------------
-    NOTAS B¡SICAS (COMUNES A TODOS LOS PLAYERS)
-    --- MOVIMIENTO (Input System) ---
-    - PlayerInput: El componente debe estar en el MISMO objeto que este script.
-    - Acciones: Usa la acciÛn "Move" (Vector2) de vuestro Input Action Asset.
-
-    --- INTERACCI”N Y PUNTOS ---
-    - Tags: Los objetos recolectables DEBEN tener el Tag "Item".
-    - ComunicaciÛn: El Player avisa al GameManager local, y este al MainManager.
-
-    --- SEGURIDAD ---
-    - Si el PlayerInput o el GameManager fallan, el script lanza un error en consola
-      en lugar de "petar" el juego (NullReference Protection).
-
-    ---------------------------------------------------------------------------------
-    NOTAS ESPECÕFICAS DEL NIVEL 4 (AR / 3D)
-    - FÕSICAS: °IMPORTANTE! Este nivel es 3D. Usa 'OnTriggerEnter' en el codigo
-    - COLLIDERS: Los items deben tener BoxCollider/SphereCollider con 'Is Trigger'.
-    --------------------------------------------------------------------------------- */
-// ==============================================================================
 public class G4_Player : MonoBehaviour
 {
-    public float velocidad = 0.5f;
-    private PlayerInput playerInput;
+    public Camera camaraAR; 
     private G4_GameManager gameManager;
 
     void Start()
     {
-        // Buscamos componentes de forma local
-        playerInput = GetComponent<PlayerInput>();
-
-        // Buscamos al manager con el nuevo nombre G4_GameManager
         gameManager = Object.FindAnyObjectByType<G4_GameManager>();
+        if (camaraAR == null) camaraAR = Camera.main;
     }
 
     void Update()
     {
-        if (playerInput == null) return;
-
-        Vector2 inputMovimiento = playerInput.actions["Move"].ReadValue<Vector2>();
-
-        // En AR movemos en el eje X e Y sobre la vista de la c·mara
-        Vector3 movimiento = new Vector3(inputMovimiento.x, inputMovimiento.y, 0);
-        transform.position += movimiento * velocidad * Time.deltaTime;
+        // 1. Detectar clic de rat√≥n (Para probar en Unity)
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            LanzarRayo(Mouse.current.position.ReadValue());
+        }
+        
+        // 2. Detectar toque t√°ctil (Para cuando lo pases al m√≥vil)
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        {
+            LanzarRayo(Touchscreen.current.primaryTouch.position.ReadValue());
+        }
     }
 
-    private void OnTriggerEnter(Collider other) // DETECCI”N 3D 
+    private void LanzarRayo(Vector2 screenPos)
     {
-        if (other.CompareTag("Item"))
-        {
-            // Seguridad: desactivamos el choque antes de borrar
-            other.enabled = false;
+        if (camaraAR == null) return;
 
-            if (gameManager != null)
+        Ray ray = camaraAR.ScreenPointToRay(screenPos);
+        RaycastHit hit;
+
+        // L√çNEA NUEVA PARA DEPURAR:
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 1f);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            Debug.Log("He tocado algo: " + hit.collider.name); // Esto te dir√° qu√© est√°s tocando
+        
+            if (hit.collider.CompareTag("Item"))
             {
-                gameManager.ItemRecogido();
-                Destroy(other.gameObject);
+                G4_Asteroide asteroide = hit.collider.GetComponent<G4_Asteroide>();
+                if (asteroide != null)
+                {
+                    if (gameManager != null) gameManager.SumarPuntos(asteroide.puntos);
+                    asteroide.Explotar();
+                }
             }
-            else
-            {
-                Debug.LogWarning("G4_Player: No se encuentra el G4_GameManager en la escena.");
-            }
+        }
+        else
+        {
+            Debug.Log("El rayo no ha tocado nada");
+            if (gameManager != null) gameManager.RomperCombo();
         }
     }
 }
