@@ -3,64 +3,35 @@ using TMPro;
 using System.Collections;
 using UnityEngine.XR.Management;
 
-// ==============================================================================
-// >>> G4_GAMEMANAGER: Controlador específico del Minijuego 4 (AR)
-// Este es el "cerebro" local de vuestro nivel. Se encarga de contar los items,
-// gestionar la cámara AR y avisar al MainManager cuando ganamos.
-/* ---------------------------------------------------------------------------------
-    NOTAS BÁSICAS (COMUNES A TODOS LOS NIVELES)
-    --- PUNTOS Y DATOS (MainManager) ---
-    - MainManager.Instance.SumarPuntoTemporal(int) -> Suma puntos SOLO en vuestro nivel. 
-      Si el jugador abandona la escena o reinicia, este valor se limpia. Solo se guarda 
-      en la base de datos al llamar a 'FinalizarEscenaActual()' y si está en modo historia.
-    - MainManager.Instance.modoHistoriaActivo      -> (Bool) Para saber si es modo Historia o Libre.
-
-    --- INTERFAZ Y NAVEGACIÓN (UIMainManager) ---
-    - UIMainManager.Instance.Boton_FinalDelJuego() -> Guarda puntos, limpia RAM y 
-      avanza en la historia (Usadlo en el botón "Siguiente/Continuar" al ganar).
-    - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menú de selección 
-      con limpieza de valores temporales.
-
-    --- CONFIGURACIÓN DE ESCENAS ---
-    *** !!! IMPORTANTE: Toda escena nueva debe registrarse en 'File > Build Settings'. 
-        El orden en la lista determina el índice de carga en el Modo Historia. ***
-
-    ---------------------------------------------------------------------------------
-    NOTAS ESPECÍFICAS DEL NIVEL 4 (AR)
-    - panelCargandoAR: Se desactiva automáticamente tras 1.5s cuando la cámara está lista.
-    - objetoARSession: Debe contener el AR Session y el Origin para que el script los gestione.
-    ** No le he centrado la camara
-    ** No he arreglado la pequeña espera que hay para que cargue la camara AR
-
-    --------------------------------------------------------------------------------- */
-
 public class G4_GameManager : MonoBehaviour
 {
-    [Header("Configuración AR")]
-    public GameObject objetoARSession; // He arrastrado aquí AR Session 
+    [Header("ConfiguraciÃ³n AR")]
+    public GameObject objetoARSession;
 
-    [Header("Configuración de Juego")]
-    public int itemsParaGanar = 2;
+    [Header("UI del Juego")]
     public TextMeshProUGUI textoPuntos;
+    public TextMeshProUGUI textoTiempo; // NUEVO: Para el contador de 2 min
     public GameObject panelVictoria;
-
-    [Header("Botones de Victoria")]
     public GameObject botonContinuar;
     public GameObject botonSalir;
 
-    private int itemsActuales = 0;
+    [Header("Referencias")]
+    public G4_AsteroidSpawner spawner;
+
+    // Variables internas del GDD
+    private float tiempoRestante = 120f; // 2 minutos de juego
     private int puntosTotales = 0;
+    private int comboActual = 0;
+    private bool juegoActivo = false;
 
     void Start()
     {
-        // Forzamos reinicio de AR para evitar "pantallazos negros"
         if (objetoARSession != null) objetoARSession.SetActive(false);
         StartCoroutine(ReactivarAR());
     }
 
     IEnumerator ReactivarAR()
     {
-        // Verificación de los subsistemas de Unity XR
         if (XRGeneralSettings.Instance.Manager.activeLoader != null)
         {
             XRGeneralSettings.Instance.Manager.StartSubsystems();
@@ -76,33 +47,79 @@ public class G4_GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         if (objetoARSession != null) objetoARSession.SetActive(true);
+        
+        // Iniciamos el juego tras cargar el AR
+        juegoActivo = true;
+        ActualizarUI();
     }
 
-    public void ItemRecogido()
+    void Update()
     {
-        itemsActuales++;
-        puntosTotales += 20;
+        if (!juegoActivo) return;
 
-        if (textoPuntos != null)
-            textoPuntos.text = "Puntos: " + puntosTotales;
+        tiempoRestante -= Time.deltaTime;
+        ActualizarFaseDificultad();
 
-        // Mandamos los puntos al registro temporal del MainManager
-        if (MainManager.Instance != null)
-            MainManager.Instance.SumarPuntoTemporal(20);
-
-        if (itemsActuales >= itemsParaGanar)
+        if (tiempoRestante <= 0)
         {
+            tiempoRestante = 0;
             GanarMinijuego();
         }
+
+        ActualizarUI();
+    }
+
+    private void ActualizarFaseDificultad()
+    {
+        if (spawner == null) return;
+
+        if (tiempoRestante <= 30f) spawner.velocidadSpawn = "Rapida";
+        else if (tiempoRestante <= 75f) spawner.velocidadSpawn = "Moderada";
+        else spawner.velocidadSpawn = "Lenta";
+    }
+
+    public void SumarPuntos(int puntos)
+    {
+        if (!juegoActivo) return;
+
+        puntosTotales += puntos;
+        comboActual++;
+
+        int bonus = 0;
+        if (comboActual >= 5)
+        {
+            bonus = 50;
+            puntosTotales += bonus; // Bonus por racha del GDD
+            comboActual = 0;
+            Debug.Log("Â¡Combo de 5! +50 Puntos");
+        }
+
+        // Mandamos SOLO los puntos reciÃ©n ganados (incluyendo el bonus si lo hay) al MainManager
+        if (MainManager.Instance != null)
+            MainManager.Instance.SumarPuntoTemporal(puntos + bonus);
+
+        ActualizarUI();
+    }
+
+    public void RomperCombo()
+    {
+        comboActual = 0;
+    }
+
+    private void ActualizarUI()
+    {
+        if (textoPuntos != null) textoPuntos.text = "Puntos: " + puntosTotales;
+        if (textoTiempo != null) textoTiempo.text = "Tiempo: " + Mathf.CeilToInt(tiempoRestante) + "s";
     }
 
     private void GanarMinijuego()
     {
+        juegoActivo = false;
+        if (spawner != null) spawner.gameObject.SetActive(false);
+
         if (panelVictoria != null)
         {
             panelVictoria.SetActive(true);
-
-            // Liberamos el cursor del ratón (importante para emulador de AR en PC)
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
