@@ -1,70 +1,106 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
-// ==============================================================================
-// >>> G3_PLAYER: Controlador de movimiento y detecciÛn (Minijuego 3)
-// Gestiona el movimiento mediante el nuevo Input System y detecta la colisiÛn 
-// con items para reportar los puntos al G3_GameManager local.
-/* ---------------------------------------------------------------------------------
-    NOTAS DE MOVIMIENTO (Input System)
-    --- CONFIGURACI”N ---
-    - PlayerInput: El componente debe estar en el MISMO objeto que este script.
-    - Acciones: Lee la acciÛn "Move" (Vector2) definida en vuestro Action Asset.
-    
-    --- INTERACCI”N ---
-    - Tags: Los objetos recolectables DEBEN tener el Tag "Item" y el IsTrigger activo
-      en su Collider2D para que la recolecciÛn funcione.
-    
-    --- SEGURIDAD ---
-    - Si el PlayerInput falla o no est· asignado, el script se detiene (return) para 
-      evitar que la consola se llene de errores de referencia nula.
-    - El script busca autom·ticamente el G3_GameManager en la escena al iniciar.
-    --------------------------------------------------------------------------------- */
-// ==============================================================================
+using System.Collections;
 
 public class G3_Player : MonoBehaviour
 {
-    // AJUSTES
+    [Header("Movimiento")]
     public float velocidad = 5f;
 
-    private PlayerInput playerInput;
-    private G3_GameManager gameManager;
+    [Header("Disparo")]
+    public GameObject prefabBala;             // Arrastra aqu√≠ el prefab BalaJugador
+    public float tiempoEntreDisparos = 0.3f;  // Segundos entre cada disparo autom√°tico
+    public Transform puntoDisparo;            // Punto desde donde sale la bala
+
+    [Header("Vidas")]
+    public int vidas = 3;                     // Vidas iniciales del jugador
+
+    private Vector2 _minBounds;               // L√≠mite inferior-izquierdo de la pantalla
+    private Vector2 _maxBounds;               // L√≠mite superior-derecho de la pantalla
+    private float _timerDisparo;              // Contador regresivo para el disparo
+    private bool _invencible = false;         // Evita recibir da√±o varias veces seguidas
+    private float _tiempoInvencible = 1.5f;   // Segundos de invencibilidad tras recibir da√±o
 
     void Start()
     {
-        // 1. Buscamos el componente EN el propio jugador (eficiencia local)
-        playerInput = GetComponent<PlayerInput>();
+        // Calculamos los l√≠mites de la pantalla
+        Camera cam = Camera.main;
+        float margen = 0.3f;
+        _minBounds = cam.ViewportToWorldPoint(new Vector2(0, 0));
+        _maxBounds = cam.ViewportToWorldPoint(new Vector2(1, 1));
+        _minBounds += Vector2.one * margen;
+        _maxBounds -= Vector2.one * margen;
 
-        // 2. Buscamos al manager del G3 para reportar puntos
-        gameManager = Object.FindAnyObjectByType<G3_GameManager>();
+        // Empezamos el timer a 0 para que dispare nada m√°s empezar
+        _timerDisparo = 0f;
     }
 
     void Update()
     {
-        // SEGURIDAD: Evitamos errores si no hay Input configurado
-        if (playerInput == null) return;
+        // MOVIMIENTO
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+        Vector3 mov = new Vector3(x, y, 0).normalized;
+        transform.position += mov * velocidad * Time.deltaTime;
 
-        // Leemos el valor del joystick o WASD
-        Vector2 inputMovimiento = playerInput.actions["Move"].ReadValue<Vector2>();
+        // Limitamos a los bordes de la pantalla
+        float clampX = Mathf.Clamp(transform.position.x, _minBounds.x, _maxBounds.x);
+        float clampY = Mathf.Clamp(transform.position.y, _minBounds.y, _maxBounds.y);
+        transform.position = new Vector3(clampX, clampY, 0);
 
-        // Aplicamos el movimiento al transform (Plano 2D)
-        Vector3 movimiento = new Vector3(inputMovimiento.x, inputMovimiento.y, 0);
-        transform.position += movimiento * velocidad * Time.deltaTime;
+        // DISPARO AUTOM√ÅTICO
+        _timerDisparo -= Time.deltaTime;
+        if (_timerDisparo <= 0f)
+        {
+            Disparar();
+            _timerDisparo = tiempoEntreDisparos;
+        }
+    }
+
+    private void Disparar()
+    {
+        if (prefabBala != null)
+        {
+            // Instanciamos la bala en el punto de disparo o en la posici√≥n del jugador
+            Vector3 pos = puntoDisparo != null ? puntoDisparo.position : transform.position;
+            Instantiate(prefabBala, pos, Quaternion.identity);
+        }
+    }
+
+    public void RecibirDa√±o()
+    {
+        // Si est√° en periodo de invencibilidad no recibe da√±o
+        if (_invencible) return;
+
+        vidas--;
+        G3_GameManager.Instance.ActualizarVidas(vidas);
+        Debug.Log("Vidas restantes: " + vidas);
+
+        if (vidas <= 0)
+        {
+            // Sin vidas ‚Äî avisamos al GameManager
+            G3_GameManager.Instance.PerderPartida();
+        }
+        else
+        {
+            // Activamos invencibilidad temporal
+            StartCoroutine(PeriodoInvencibilidad());
+        }
+    }
+
+    private IEnumerator PeriodoInvencibilidad()
+    {
+        _invencible = true;
+        // Esperamos el tiempo de invencibilidad
+        yield return new WaitForSeconds(_tiempoInvencible);
+        _invencible = false;
     }
 
     private void OnTriggerEnter2D(Collider2D otro)
     {
-        // RECOLECCI”N DE ITEMS:
-        // Recordad poner el Tag "Item" a los objetos recolectables del G3.
-        if (otro.CompareTag("Item"))
+        // Recibe da√±o si le toca una bala enemiga o un enemigo directamente
+        if (otro.CompareTag("BalaEnemigo") || otro.CompareTag("Enemy"))
         {
-            Destroy(otro.gameObject);
-
-            // Si el manager existe, le avisamos del punto recogido
-            if (gameManager != null)
-            {
-                gameManager.ItemRecogido();
-            }
+            RecibirDa√±o();
         }
     }
 }

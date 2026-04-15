@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - Enemy
+  - BalaEnemigo
+  - BalaJugador
   - Interactable
   - InteractableSec
   - G2_DeathZone

@@ -2,70 +2,98 @@ using UnityEngine;
 using TMPro;
 
 // ==============================================================================
-// >>> G3_GAMEMANAGER: Controlador especÌfico del Minijuego 3
+// >>> G3_GAMEMANAGER: Controlador especÔøΩfico del Minijuego 3
 // Este es el "cerebro" local de vuestro nivel. Se encarga de contar los items
 // y avisar al MainManager (el motor global) cuando ganamos.
 /* ---------------------------------------------------------------------------------
-    NOTAS B¡SICAS (COMUNES A TODOS LOS NIVELES)
+    NOTAS BÔøΩSICAS (COMUNES A TODOS LOS NIVELES)
     --- PUNTOS Y DATOS (MainManager) ---
     - MainManager.Instance.SumarPuntoTemporal(int) -> Suma puntos SOLO en vuestro nivel. 
       Si el jugador abandona la escena o reinicia, este valor se limpia. Solo se guarda 
-      en la base de datos al llamar a 'FinalizarEscenaActual()' y si est· en modo historia.
+      en la base de datos al llamar a 'FinalizarEscenaActual()' y si estÔøΩ en modo historia.
     - MainManager.Instance.modoHistoriaActivo      -> (Bool) Para saber si es modo Historia o Libre.
 
-    --- INTERFAZ Y NAVEGACI”N (UIMainManager) ---
+    --- INTERFAZ Y NAVEGACIÔøΩN (UIMainManager) ---
     - UIMainManager.Instance.Boton_FinalDelJuego() -> Guarda puntos, limpia RAM y 
-      avanza en la historia (Usadlo en el botÛn "Siguiente/Continuar" al ganar).
-    - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al men˙ de selecciÛn 
+      avanza en la historia (Usadlo en el botÔøΩn "Siguiente/Continuar" al ganar).
+    - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menÔøΩ de selecciÔøΩn 
       con limpieza de valores temporales.
 
-    --- CONFIGURACI”N DE ESCENAS ---
+    --- CONFIGURACIÔøΩN DE ESCENAS ---
     *** !!! IMPORTANTE: Toda escena nueva debe registrarse en 'File > Build Settings'. 
-        El orden en la lista determina el Ìndice de carga en el Modo Historia. ***
+        El orden en la lista determina el ÔøΩndice de carga en el Modo Historia. ***
     --------------------------------------------------------------------------------- */
 // ==============================================================================
 
 public class G3_GameManager : MonoBehaviour
 {
-    public int itemsParaGanar = 2;
-    public TextMeshProUGUI textoUI;
-    public GameObject panelVictoria;
+    // Singleton: permite llamarlo desde cualquier script con G3_GameManager.Instance
+    public static G3_GameManager Instance;
 
-    [Header("Botones de Victoria")]
-    public GameObject botonContinuar;
-    public GameObject botonSalir;
+    [Header("UI")]
+    public TextMeshProUGUI textoVidas;    // Texto que muestra las vidas en pantalla
+    public TextMeshProUGUI textoPuntos;   // Texto que muestra los puntos en pantalla
+    public GameObject panelVictoria;      // Panel que aparece al ganar
+    public GameObject panelDerrota;       // Panel que aparece al perder
 
-    private int itemsActuales = 0;
-    private int puntosTotales = 0;
+    [Header("Botones")]
+    public GameObject botonContinuar;     // Bot√≥n para continuar en modo historia
+    public GameObject botonSalir;         // Bot√≥n para salir al men√∫
 
-    public void ItemRecogido()
+    private int _puntosTotales = 0;       // Puntos acumulados en este minijuego
+
+    void Awake()
     {
-        itemsActuales++;
-        puntosTotales += 5;
-
-        if (textoUI != null)
+        // Singleton: guardamos la referencia a este GameManager
+        if (Instance == null)
         {
-            textoUI.text = "Puntos: " + puntosTotales;
+            Instance = this;
         }
-
-        if (MainManager.Instance != null)
+        else
         {
-            MainManager.Instance.SumarPuntoTemporal(5);
-        }
-
-        if (itemsActuales >= itemsParaGanar)
-        {
-            GanarMinijuego();
+            Destroy(gameObject);
         }
     }
 
-    private void GanarMinijuego()
+    void Start()
     {
+        ActualizarUI();
+    }
+
+    // Suma puntos al matar un enemigo y avisa al MainManager
+    public void SumarPuntos(int cantidad)
+    {
+        _puntosTotales += cantidad;
+        ActualizarUI();
+
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.SumarPuntoTemporal(cantidad);
+        }
+    }
+
+    // Se llama cuando el jugador se queda sin vidas
+    public void PerderPartida()
+    {
+        Debug.Log("Game Over");
+        Time.timeScale = 0f; // Pausamos el juego
+
+        if (panelDerrota != null)
+        {
+            panelDerrota.SetActive(true);
+            botonSalir.SetActive(true);
+        }
+    }
+
+    // Se llama cuando el jugador derrota todas las oleadas y el boss
+    public void GanarPartida()
+    {
+        Debug.Log("Victoria");
+        Time.timeScale = 0f; // Pausamos el juego
+
         if (panelVictoria != null)
         {
             panelVictoria.SetActive(true);
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
 
             if (MainManager.Instance != null)
             {
@@ -73,6 +101,35 @@ public class G3_GameManager : MonoBehaviour
                 botonContinuar.SetActive(historia);
                 botonSalir.SetActive(true);
             }
+        }
+    }
+
+    // Actualiza los textos de la UI con los valores actuales
+    private void ActualizarUI()
+    {
+        if (textoPuntos != null)
+            textoPuntos.text = "Puntos: " + _puntosTotales;
+    }
+
+    // Actualiza el texto de vidas desde el Player
+    public void ActualizarVidas(int vidas)
+    {
+        if (textoVidas != null)
+            textoVidas.text = "Vidas: " + vidas;
+    }
+    
+    // Se llama al pulsar el bot√≥n de salir
+    public void BotonSalirPulsado()
+    {
+        Debug.Log("BOTON SALIR PULSADO"); 
+        // Reanudamos el tiempo por si estaba pausado
+        Time.timeScale = 1f;
+    
+        // Usamos el MainManager para volver al men√∫
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.FinalizarEscenaActual();
+            
         }
     }
 }
