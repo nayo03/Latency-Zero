@@ -1,2 +1,18 @@
 fileFormatVersion: 2
 guid: 76a012492d3270444b01a28d3512f1c2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - objetoARSession: {instanceID: 0}
+  - textoPuntos: {instanceID: 0}
+  - textoTiempo: {fileID: 912868661721314781, guid: a8676b232f80d5a43ab06e118ef63d96, type: 3}
+  - panelVictoria: {instanceID: 0}
+  - botonContinuar: {instanceID: 0}
+  - botonSalir: {instanceID: 0}
+  - spawner: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

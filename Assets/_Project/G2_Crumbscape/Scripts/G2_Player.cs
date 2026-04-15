@@ -1,76 +1,143 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 // ==============================================================================
-// >>> G2_PLAYER: Controlador de movimiento y detección (Minijuego 2)
-// Este script gestiona el movimiento mediante el nuevo Input System y detecta
-// cuando el jugador colisiona con los items para avisar al GameManager local.
-/* ---------------------------------------------------------------------------------
-    NOTAS DE MOVIMIENTO (Input System)
-    --- CONFIGURACIÓN ---
-    - PlayerInput: El componente debe estar en el MISMO objeto que este script.
-    - Acciones: Usa la acción "Move" definida en vuestro Input Action Asset.
-    
-    --- INTERACCIÓN ---
-    - Tags: Los objetos recolectables DEBEN tener el Tag "Item" y el IsTrigger activo
-      en su Collider2D para que la recolección funcione.
-    
-    --- SEGURIDAD ---
-    - Si el PlayerInput falla o no está asignado, el script se detiene para evitar 
-      que la consola se llene de errores (NullReference).
-    - Se ha añadido un Error Log específico por si falta el GameManager en la escena.
-    --------------------------------------------------------------------------------- */
+// G2_PLAYER: Controlador de la nave del jugador
 // ==============================================================================
-
 public class G2_Player : MonoBehaviour
 {
-    // VARIABLES
-    public float velocidad = 5f;
+    [Header("Configuración")]
+    [SerializeField] private float flapForce = 4f;       // Fuerza del impulso hacia arriba al pulsar
+    [SerializeField] private GameObject explosionPrefab; // Prefab con el efecto de explosión
 
-    private G2_GameManager gameManager;
-    private PlayerInput playerInput;
+    // ----------- REFERENCIAS INTERNAS -----------
+    private PlayerInput playerInput;       // Sistema de Input para detectar teclas/clics
+    private Rigidbody2D rb;                // Motor de físicas para mover la nave
+    private G2_UIManager uiManager;        // Script de la interfaz para los mensajes
+    private SpriteRenderer spriteRenderer; // La imagen de la nave (para color o apagarla)
+    private GameObject thrusterEffect;     // El fuego del motor (objeto hijo)
 
+    // ----------- ESTADOS -----------
+    public bool isDead = false;              // Estado de vida (público para que el Alien lo vea)
+    public enum TipoMuerte { Caida, Choque } // Opciones de muerte para elegir el mensaje de UI
+
+    // ==========================================================================
+    // PREPARACIÓN INICIAL (Se ejecuta al nacer el objeto)
+    // ==========================================================================
     void Start()
     {
-        // ASIGNACIÓN DE COMPONENTES:
-        // Buscamos el Input System local (el que configuraste en el prefab/personaje).
-        playerInput = GetComponent<PlayerInput>();
+        // Guardamos los componentes para usarlos rápido después
+        rb = GetComponent<Rigidbody2D>();                // Componente de físicas
+        playerInput = GetComponent<PlayerInput>();       // Componente de controles
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Componente de imagen
 
-        // Buscamos al "cerebro" específico de este nivel (G2).
-        gameManager = Object.FindAnyObjectByType<G2_GameManager>();
+        uiManager = Object.FindAnyObjectByType<G2_UIManager>(); // Buscamos el manager de la interfaz
+
+        Transform t = transform.Find("PlayerThruster"); // Buscamos el fuego del motor como hijo
+        if (t != null) { thrusterEffect = t.gameObject; } // Si existe, lo guardamos
+        
     }
 
+    // ==========================================================================
+    // BUCLE DE LÓGICA (Update)
+    // ==========================================================================
     void Update()
     {
-        // CONTROL DE SEGURIDAD: Evita errores si el Input no está listo.
-        if (playerInput == null) return;
+        // FILTRO 1: Si el jugador ha muerto o el sistema de input falla, bloqueamos el control
+        if (isDead || playerInput == null) return;
 
-        // LECTURA DE MOVIMIENTO: Capturamos el valor del mapa de acciones "Move".
-        Vector2 inputMovimiento = playerInput.actions["Move"].ReadValue<Vector2>();
+        // FILTRO 2. Si el juego está pausado, no permitimos NI el salto NI el límite del techo
+        if (Time.timeScale == 0) return; 
 
-        // CÁLCULO DE POSICIÓN: Movimiento en los ejes X e Y (plano 2D).
-        Vector3 movimiento = new Vector3(inputMovimiento.x, inputMovimiento.y, 0);
-        transform.position += movimiento * velocidad * Time.deltaTime;
+        // LÓGICA DE SALTO: Comprobamos si se ha pulsado la acción "Interact" en este frame
+        if (playerInput.actions["Interact"].WasPressedThisFrame())
+        {
+            // Salto.
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse);
+        }
+
+        // 4. Límite del techo (Solo funciona si el juego ha empezado)
+        if (transform.position.y > 5.0f)
+        {
+            transform.position = new Vector3(transform.position.x, 5.0f, transform.position.z);
+            if (rb.linearVelocity.y > 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+        }
     }
 
+    // ==========================================================================
+    // DETECCIÓN DE COLISIONES
+    // ==========================================================================
     private void OnTriggerEnter2D(Collider2D otro)
     {
-        // DETECCIÓN DE RECOLECTABLES:
-        // Buscamos objetos con el Tag "Item".
-        if (otro.CompareTag("Item"))
-        {
-            Destroy(otro.gameObject); // Eliminamos el objeto recogido
+        // FILTRO 1: Si ya estamos muertos, no procesamos más choques
+        if (isDead) return;
 
-            // COMUNICACIÓN CON EL MANAGER LOCAL:
-            if (gameManager != null)
-            {
-                gameManager.ItemRecogido();
-            }
-            else
-            {
-                // Aviso crítico para el equipo si el nivel no está bien montado.
-                Debug.LogError("<color=red>¡ERROR!</color> El Player no encuentra el G2_GameManager en esta escena.");
-            }
+        // FILTRO 2: Comprobar qué objeto hemos tocado
+        if (otro.CompareTag("G2_Asteroid"))
+        {
+            OnDie(TipoMuerte.Choque); // Muerte por chocar contra asteroide
         }
+        else if (otro.CompareTag("G2_DeathZone"))
+        {
+            OnDie(TipoMuerte.Caida);  // Muerte por salir de los límites
+        }
+    }
+
+    // ==========================================================================
+    // GESTIÓN DE LA MUERTE (OnDie)
+    // ==========================================================================
+    void OnDie(TipoMuerte motivo)
+    {
+        if (isDead) return; // Cláusula de seguridad
+        isDead = true;      // Marcamos que la nave ya no está operativa
+
+        // 1. AVISO AL MANAGER: Detenemos el cronómetro de nivel para no ganar por error
+        if (G2_GameManager.Instance != null)
+        {
+            G2_GameManager.Instance.Morir();
+        }
+
+        // 2. FÍSICAS: Quitamos las colisiones para que la nave flote o caiga sin estorbar
+        rb.simulated = false;
+
+        // 3. FEEDBACK VISUAL:
+        // Solo creamos explosión si ha sido un choque (la caída es silenciosa)
+        if (motivo == TipoMuerte.Choque && explosionPrefab != null)
+        {
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        }
+
+        // Apagamos el fuego del motor siempre al morir
+        if (thrusterEffect != null) thrusterEffect.SetActive(false);
+
+        // Ajustamos la apariencia según cómo hayamos muerto
+        if (spriteRenderer != null)
+        {
+            if (motivo == TipoMuerte.Caida)
+                spriteRenderer.color = Color.black; // Se vuelve negra (quemada)
+            else
+                spriteRenderer.enabled = false;     // Desaparece (pulverizada por la explosión)
+        }
+
+        // 4. INTERFAZ: Mandamos el mensaje correspondiente al UIManager
+        if (uiManager != null)
+        {
+            if (motivo == TipoMuerte.Caida) uiManager.MostrarMensajeMuerteCaida();
+            else uiManager.MostrarMensajeMuerteChoque();
+        }
+
+        // 5. REINICIO: Esperamos 2 segundos para que el jugador vea el desastre y recargamos
+        Invoke("ReiniciarNivel", 2f);
+    }
+
+    // ==========================================================================
+    // REINICIAR NIVEL
+    // ==========================================================================
+    void ReiniciarNivel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Recargamos la escena actual para volver a intentarlo
     }
 }

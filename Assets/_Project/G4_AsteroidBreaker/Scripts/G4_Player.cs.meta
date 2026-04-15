@@ -1,2 +1,12 @@
 fileFormatVersion: 2
 guid: fd88e1b32821cba41bf49277190773dc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - camaraAR: {fileID: 3124080920200156707, guid: af12753fe437e43419b3cfedfb532b2b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

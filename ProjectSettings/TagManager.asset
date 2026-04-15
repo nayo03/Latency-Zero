@@ -8,6 +8,12 @@ TagManager:
   - Enemy
   - BalaEnemigo
   - BalaJugador
+  - Interactable
+  - InteractableSec
+  - G2_DeathZone
+  - G2_Asteroid
+  - G2_Star
+  - G2_Bread
   layers:
   - Default
   - TransparentFX

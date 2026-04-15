@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 // ==============================================================================
 // >>> G1_GAMEMANAGER: Controlador específico del Minijuego 1
@@ -45,6 +46,52 @@ public class G1_GameManager : MonoBehaviour
     private int intentosActuales = 0;
     private int puntosTotales = 0;
 
+    [System.Serializable]
+    public struct DificultadIntento
+    {
+        public string nombre;
+        public float velocidad;
+        public float minPerfect;
+        public float maxPerfect;
+        public float minGood;
+        public float maxGood;
+    }
+
+    [Header("Configuración de Progresión")]
+    public DificultadIntento[] nivelesDificultad;
+
+    private void Start()
+    {
+        intentosMaximos = nivelesDificultad.Length;
+        ActualizarDificultadJuego();
+    }
+    private void ActualizarDificultadJuego()
+    {
+        if (intentosActuales < nivelesDificultad.Length)
+        {
+            DificultadIntento configActual = nivelesDificultad[intentosActuales];
+
+            controladorAguja.switchDifficulty(
+                configActual.velocidad,
+                configActual.minPerfect,
+                configActual.maxPerfect,
+                configActual.minGood,
+                configActual.maxGood
+            );
+        }
+
+    }
+
+    [Header("Paramentros Nivel Secreto")]
+    public TextMeshProUGUI textoTimer;
+    public float tiempoSmasher = 5.0f;
+    public GameObject finalSecreto;
+    public int puntosPorSmash = 100;
+
+    private int clicksSmasher = 0;
+    private bool maxSmasherActivado = false;
+    public int puntosParaNivelSecreto = 200;
+
     private void OnEnable()
     {
         // Sincronization with DeadlightController: Subscribe to the OnTryComplete event to receive updates on attempts
@@ -73,10 +120,71 @@ public class G1_GameManager : MonoBehaviour
             MainManager.Instance.SumarPuntoTemporal(punctuation);
         }
 
-        if (intentosActuales >= intentosMaximos)
+        if (intentosActuales < intentosMaximos)
+        {
+            ActualizarDificultadJuego();
+        }
+        else if (intentosActuales == intentosMaximos && puntosTotales >= puntosParaNivelSecreto)
+        {
+            StartCoroutine(ActivarNivelSecreto());
+        }
+        else
         {
             TerminarMinijuego();
         }
+    }
+
+    private IEnumerator ActivarNivelSecreto()
+    {
+        controladorAguja.SwitchOffNeedle();
+        yield return new WaitForSeconds(1f);
+
+        finalSecreto.SetActive(true);
+        maxSmasherActivado = true;
+        clicksSmasher = 0;
+
+        float timer = tiempoSmasher;
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            textoTimer.text = "¡Pressiona el espacio Rápido!" + timer.ToString("F1") + "s";
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                RegistrarClickSmasher();
+            }
+            yield return null;
+        }
+        FinalizarNivelSecreto();
+    }
+
+    private void RegistrarClickSmasher()
+    {
+        if (maxSmasherActivado)
+        {
+            clicksSmasher++;
+            puntosTotales += puntosPorSmash;
+
+            if (MainManager.Instance != null)
+            {
+                MainManager.Instance.SumarPuntoTemporal(puntosPorSmash);
+            }
+
+            if (textoUI != null)
+            {
+                textoUI.text = "Puntos: " + puntosTotales;
+            }
+
+        }
+    }
+
+    private void FinalizarNivelSecreto()
+    {
+        maxSmasherActivado = false;
+        finalSecreto.SetActive(false);
+
+        Debug.Log("Puntos extra por clicks: " + clicksSmasher * puntosPorSmash);
+        TerminarMinijuego();
     }
 
     private void TerminarMinijuego()
