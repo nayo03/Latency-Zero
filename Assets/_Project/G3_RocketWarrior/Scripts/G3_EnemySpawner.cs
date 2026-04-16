@@ -38,7 +38,8 @@ public class G3_Spawner : MonoBehaviour
 
     private void SpawnOleada(int cantidad)
     {
-        // Calculamos el punto de inicio para centrar los enemigos en pantalla
+        _enemigosVivos = cantidad;
+
         float anchoTotal = (cantidad - 1) * separacionEntreEnemigos;
         float startX = -anchoTotal / 2f;
 
