@@ -19,6 +19,7 @@ public class G3_Player : MonoBehaviour
     private float _timerDisparo;              // Contador regresivo para el disparo
     private bool _invencible = false;         // Evita recibir daño varias veces seguidas
     private float _tiempoInvencible = 1.5f;   // Segundos de invencibilidad tras recibir daño
+    private G3_Joystick _joystick;            // Referencia al joystick virtual (móvil)
 
     void Start()
     {
@@ -32,13 +33,26 @@ public class G3_Player : MonoBehaviour
 
         // Empezamos el timer a 0 para que dispare nada más empezar
         _timerDisparo = 0f;
+
+        // Buscamos el joystick en la escena — puede no existir en PC y es correcto
+        _joystick = Object.FindAnyObjectByType<G3_Joystick>();
     }
 
     void Update()
     {
         // MOVIMIENTO
+        // Leemos input del teclado por defecto
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
+
+        // Si el joystick existe y tiene input, lo usamos en lugar del teclado
+        // Esto permite que funcione tanto en PC (teclado) como en móvil (joystick)
+        if (_joystick != null && _joystick.InputJoystick.magnitude > 0)
+        {
+            x = _joystick.InputJoystick.x;
+            y = _joystick.InputJoystick.y;
+        }
+
         Vector3 mov = new Vector3(x, y, 0).normalized;
         transform.position += mov * velocidad * Time.deltaTime;
 
