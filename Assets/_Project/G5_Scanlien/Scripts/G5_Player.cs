@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 // Gestiona el movimiento de la bola/jugador usando OnMove (Input System).
 /* ---------------------------------------------------------------------------------
     NOTAS DE MOVIMIENTO
-    --- CONFIGURACIÓN ---
+    --- CONFIGURACIï¿½N ---
     - X = Movimiento lateral (Izquierda/Derecha).
-    - Z = Movimiento longitudinal (Adelante/Atrás) -> mapeado desde direccionInput.y.
+    - Z = Movimiento longitudinal (Adelante/Atrï¿½s) -> mapeado desde direccionInput.y.
     - Este script mueve el objeto directamente por Transform (ideal para VR suave).
     --------------------------------------------------------------------------------- */
 // ==============================================================================

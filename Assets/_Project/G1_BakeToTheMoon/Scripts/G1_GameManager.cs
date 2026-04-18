@@ -4,38 +4,38 @@ using UnityEngine.Rendering.Universal;
 using System.Collections;
 
 // ==============================================================================
-// >>> G1_GAMEMANAGER: Controlador específico del Minijuego 1
+// >>> G1_GAMEMANAGER: Controlador especï¿½fico del Minijuego 1
 // Este es el "cerebro" local de vuestro nivel. Se encarga de contar los intentos
 // y avisar al MainManager (el motor global) cuando ganamos.
 /* ---------------------------------------------------------------------------------
-   NOTAS BÁSICAS  
+   NOTAS Bï¿½SICAS  
    --- PUNTOS Y DATOS (MainManager) ---
    - MainManager.Instance.SumarPuntoTemporal(int) -> Suma puntos SOLO en vuestro nivel. 
      Si el jugador abandona la escena o reinicia, este valor se limpia. Solo se guarda 
-     en la base de datos al llamar a 'FinalizarEscenaActual()' y si está en modo historia.
+     en la base de datos al llamar a 'FinalizarEscenaActual()' y si estï¿½ en modo historia.
    - MainManager.Instance.modoHistoriaActivo      -> (Bool) Para saber si es modo Historia o Libre.
 
-   --- INTERFAZ Y NAVEGACIÓN (UIMainManager) ---
+   --- INTERFAZ Y NAVEGACIï¿½N (UIMainManager) ---
    - UIMainManager.Instance.Boton_FinalDelJuego() -> Guarda puntos, limpia RAM y 
-     avanza en la historia (Usadlo en el botón "Siguiente/Continuar" al ganar).
-   - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menú de selección 
+     avanza en la historia (Usadlo en el botï¿½n "Siguiente/Continuar" al ganar).
+   - UIMainManager.Instance.Boton_AbandonarPartida() -> Retorno al menï¿½ de selecciï¿½n 
      con limpieza de valores temporales.
 
-   --- CONFIGURACIÓN DE ESCENAS ---
+   --- CONFIGURACIï¿½N DE ESCENAS ---
    *** !!! IMPORTANTE: Toda escena nueva debe registrarse en 'File > Build Settings'. 
-       El orden en la lista determina el índice de carga en el Modo Historia. ***
+       El orden en la lista determina el ï¿½ndice de carga en el Modo Historia. ***
 
    --------------------------------------------------------------------------------- */
 // ==============================================================================
 public class G1_GameManager : MonoBehaviour
 {
     // VARIABLES
-    [Header("Configuración de Reglas")]
+    [Header("Configuraciï¿½n de Reglas")]
     public int intentosMaximos = 5;
 
     [Header("Referencias del Nivel")]
     public DeadlightController controladorAguja;
-    public TextMeshProUGUI textoPuntuaciónFinal;
+    public TextMeshProUGUI textoPuntuacionFinal;
 
     [Header("Interfaz Local")]
     public TextMeshProUGUI textoUI;
@@ -57,7 +57,7 @@ public class G1_GameManager : MonoBehaviour
         public float maxGood;
     }
 
-    [Header("Configuración de Progresión")]
+    [Header("Configuraciï¿½n de Progresiï¿½n")]
     public DificultadIntento[] nivelesDificultad;
 
     private void Start()
@@ -147,11 +147,20 @@ public class G1_GameManager : MonoBehaviour
         while (timer > 0f)
         {
             timer -= Time.deltaTime;
-            textoTimer.text = "¡Pressiona el espacio Rápido!" + timer.ToString("F1") + "s";
+            textoTimer.text = "ï¿½Pressiona el espacio Rï¿½pido!" + timer.ToString("F1") + "s";
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 RegistrarClickSmasher();
+            }
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    RegistrarClickSmasher();
+                }
             }
             yield return null;
         }
@@ -194,30 +203,30 @@ public class G1_GameManager : MonoBehaviour
             controladorAguja.SwitchOffNeedle();
         }
 
-        if (textoPuntuaciónFinal != null)
+        if (textoPuntuacionFinal != null)
         {
-            textoPuntuaciónFinal.text = "Puntuación Final: " + puntosTotales;
+            textoPuntuacionFinal.text = "Puntuaciï¿½n Final: " + puntosTotales;
         }
 
         if (panelVictoria != null)
         {
             panelVictoria.SetActive(true); // Habilita el canvas de resultados
-            // Gestión del Cursor (del ratón): Se habilita para permitir la interacción con la UI
+            // Gestion del Cursor (del ratï¿½n): Se habilita para permitir la interacciï¿½n con la UI
             panelVictoria.SetActive(true);
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None; // Estado del ratón: se mueve de forma normal (None)
+            Cursor.lockState = CursorLockMode.None; // Estado del ratï¿½n: se mueve de forma normal (None)
 
-            // DETERMINACIÓN DEL FLUJO DE SALIDA SEGÚN EL MODO DE JUEGO
+            // DETERMINACIï¿½N DEL FLUJO DE SALIDA SEGï¿½N EL MODO DE JUEGO
             if (MainManager.Instance != null)
             {
-                if (MainManager.Instance.modoHistoriaActivo) // El modo historia está activo? Aparece el botón continuar y salir.
+                if (MainManager.Instance.modoHistoriaActivo) // El modo historia estï¿½ activo? Aparece el botï¿½n continuar y salir.
                 {
                     botonContinuar.SetActive(true);
                     botonSalir.SetActive(true);
                 }
                 else
                 {
-                    botonContinuar.SetActive(false); // El modo historia está activo? Se desactiva el botón continuar y se deja activo salir.
+                    botonContinuar.SetActive(false); // El modo historia estï¿½ activo? Se desactiva el botï¿½n continuar y se deja activo salir.
                     botonSalir.SetActive(true);
                 }
             }

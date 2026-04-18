@@ -20,7 +20,7 @@ public class G4_Player : MonoBehaviour
             LanzarRayo(Mouse.current.position.ReadValue());
         }
         
-        // 2. Detectar toque táctil (Para cuando lo pases al móvil)
+        // 2. Detectar toque táctil (Para móvil)
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
             LanzarRayo(Touchscreen.current.primaryTouch.position.ReadValue());
@@ -34,13 +34,12 @@ public class G4_Player : MonoBehaviour
         Ray ray = camaraAR.ScreenPointToRay(screenPos);
         RaycastHit hit;
 
-        // LÍNEA NUEVA PARA DEPURAR:
         Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 1f);
 
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log("He tocado algo: " + hit.collider.name); // Esto te dirá qué estás tocando
-        
+            Debug.Log("He tocado algo: " + hit.collider.name);
+
             if (hit.collider.CompareTag("Item"))
             {
                 G4_Asteroide asteroide = hit.collider.GetComponent<G4_Asteroide>();

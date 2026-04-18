@@ -24,9 +24,9 @@ public class G4_AsteroidSpawner : MonoBehaviour
 
     float ObtenerVelocidad()
     {
-        if (velocidadSpawn == "Rapida") return 0.8f;
-        if (velocidadSpawn == "Moderada") return 1.5f;
-        return 3f; // Lenta
+        if (velocidadSpawn == "Rapida") return 0.6f;
+        if (velocidadSpawn == "Moderada") return 1.2f;
+        return 2.4f; // Lenta
     }
 
     void Spawnear()

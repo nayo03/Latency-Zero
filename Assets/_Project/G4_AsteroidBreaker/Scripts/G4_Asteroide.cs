@@ -3,7 +3,7 @@ using UnityEngine;
 public class G4_Asteroide : MonoBehaviour
 {
     public int puntos = 10; 
-    public float tiempoDeVida = 6f; // Un poco más de tiempo porque ahora se mueven
+    public float tiempoDeVida = 10f; // Un poco más de tiempo porque ahora se mueven
     public float velocidadMin = 1f;
     public float velocidadMax = 3f;
 
