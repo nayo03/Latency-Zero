@@ -113,7 +113,7 @@ public class G1_GameManager : MonoBehaviour
 
         if (calidadObtenida == 0) uiLocal.IniciarFlashFallo();
 
-        if (Input.GetKeyDown(KeyCode.Space)) uiLocal.IniciarVibracion();
+        uiLocal.IniciarVibracion();
         uiLocal.RenderizarPiezaCohete(intentosActuales, calidadObtenida);
 
         intentosActuales++;
