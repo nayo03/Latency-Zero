@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
@@ -35,13 +34,7 @@ public class G1_GameManager : MonoBehaviour
 
     [Header("Referencias del Nivel")]
     public DeadlightController controladorAguja;
-    public TextMeshProUGUI textoPuntuacionFinal;
-
-    [Header("Interfaz Local")]
-    public TextMeshProUGUI textoUI;
-    public GameObject panelVictoria;
-    public GameObject botonContinuar;
-    public GameObject botonSalir;
+    public G1_UI_Controller uiLocal;
 
     private int intentosActuales = 0;
     private int puntosTotales = 0;
@@ -51,10 +44,10 @@ public class G1_GameManager : MonoBehaviour
     {
         public string nombre;
         public float velocidad;
-        public float minPerfect;
-        public float maxPerfect;
-        public float minGood;
-        public float maxGood;
+        public float iAnglePerfect;
+        public float fAnglePerfect;
+        public float iAngleGood;
+        public float fAngleGood;
     }
 
     [Header("Configuraci�n de Progresi�n")]
@@ -73,19 +66,24 @@ public class G1_GameManager : MonoBehaviour
 
             controladorAguja.switchDifficulty(
                 configActual.velocidad,
-                configActual.minPerfect,
-                configActual.maxPerfect,
-                configActual.minGood,
-                configActual.maxGood
+                configActual.iAnglePerfect,
+                configActual.fAnglePerfect,
+                configActual.iAngleGood,
+                configActual.fAngleGood
+            );
+
+            uiLocal.SincronizarDial(
+                configActual.iAnglePerfect,
+                configActual.fAnglePerfect, 
+                configActual.iAngleGood,
+                configActual.fAngleGood
             );
         }
 
     }
 
     [Header("Paramentros Nivel Secreto")]
-    public TextMeshProUGUI textoTimer;
     public float tiempoSmasher = 5.0f;
-    public GameObject finalSecreto;
     public int puntosPorSmash = 100;
 
     private int clicksSmasher = 0;
@@ -103,22 +101,31 @@ public class G1_GameManager : MonoBehaviour
         DeadlightController.OnTryComplete -= ProcesarIntento;
     }
 
-    // 
+    private void OnPress()
+    {
+
+    }
     private void ProcesarIntento(int punctuation)
     {
+        int calidadObtenida = 0;
+        if (punctuation >= 100) calidadObtenida = 2;
+        else if (punctuation >= 50) calidadObtenida = 1;
+
+        if (calidadObtenida == 0) uiLocal.IniciarFlashFallo();
+
+        if (Input.GetKeyDown(KeyCode.Space)) uiLocal.IniciarVibracion();
+        uiLocal.RenderizarPiezaCohete(intentosActuales, calidadObtenida);
+
         intentosActuales++;
         puntosTotales += punctuation;
-
-        if (textoUI != null)
-        {
-            textoUI.text = "Puntos: " + puntosTotales;
-        }
 
         // Sent to MainManager the points obtained in this attempt
         if (MainManager.Instance != null)
         {
             MainManager.Instance.SumarPuntoTemporal(punctuation);
         }
+
+        uiLocal.ActualizarTextoPuntos(puntosTotales);
 
         if (intentosActuales < intentosMaximos)
         {
@@ -132,14 +139,15 @@ public class G1_GameManager : MonoBehaviour
         {
             TerminarMinijuego();
         }
+
+        
     }
 
     private IEnumerator ActivarNivelSecreto()
     {
         controladorAguja.SwitchOffNeedle();
         yield return new WaitForSeconds(1f);
-
-        finalSecreto.SetActive(true);
+        uiLocal.ActivarInterfazSmasher(true);
         maxSmasherActivado = true;
         clicksSmasher = 0;
 
@@ -147,20 +155,13 @@ public class G1_GameManager : MonoBehaviour
         while (timer > 0f)
         {
             timer -= Time.deltaTime;
-            textoTimer.text = "�Pressiona el espacio R�pido!" + timer.ToString("F1") + "s";
+            uiLocal.ActualizarCronometroSmasher(timer);
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 RegistrarClickSmasher();
-            }
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                if (touch.phase == TouchPhase.Began)
-                {
-                    RegistrarClickSmasher();
-                }
+                uiLocal.FeedbackPulsacionBoton();
+                uiLocal.IniciarVibracion();
             }
             yield return null;
         }
@@ -177,22 +178,15 @@ public class G1_GameManager : MonoBehaviour
             if (MainManager.Instance != null)
             {
                 MainManager.Instance.SumarPuntoTemporal(puntosPorSmash);
+                uiLocal.ActualizarTextoPuntos(puntosTotales);
             }
-
-            if (textoUI != null)
-            {
-                textoUI.text = "Puntos: " + puntosTotales;
-            }
-
         }
     }
 
     private void FinalizarNivelSecreto()
     {
         maxSmasherActivado = false;
-        finalSecreto.SetActive(false);
-
-        Debug.Log("Puntos extra por clicks: " + clicksSmasher * puntosPorSmash);
+        uiLocal.ActivarInterfazSmasher(false);
         TerminarMinijuego();
     }
 
@@ -201,35 +195,8 @@ public class G1_GameManager : MonoBehaviour
         if (controladorAguja != null)
         {
             controladorAguja.SwitchOffNeedle();
-        }
-
-        if (textoPuntuacionFinal != null)
-        {
-            textoPuntuacionFinal.text = "Puntuaci�n Final: " + puntosTotales;
-        }
-
-        if (panelVictoria != null)
-        {
-            panelVictoria.SetActive(true); // Habilita el canvas de resultados
-            // Gestion del Cursor (del rat�n): Se habilita para permitir la interacci�n con la UI
-            panelVictoria.SetActive(true);
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None; // Estado del rat�n: se mueve de forma normal (None)
-
-            // DETERMINACI�N DEL FLUJO DE SALIDA SEG�N EL MODO DE JUEGO
-            if (MainManager.Instance != null)
-            {
-                if (MainManager.Instance.modoHistoriaActivo) // El modo historia est� activo? Aparece el bot�n continuar y salir.
-                {
-                    botonContinuar.SetActive(true);
-                    botonSalir.SetActive(true);
-                }
-                else
-                {
-                    botonContinuar.SetActive(false); // El modo historia est� activo? Se desactiva el bot�n continuar y se deja activo salir.
-                    botonSalir.SetActive(true);
-                }
-            }
+            bool isHistory = MainManager.Instance != null && MainManager.Instance.modoHistoriaActivo;
+            uiLocal.MostrarPantallaFinal(puntosTotales, isHistory);
         }
     }
 }

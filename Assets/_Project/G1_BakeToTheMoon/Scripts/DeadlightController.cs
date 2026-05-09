@@ -47,7 +47,7 @@ public class DeadlightController : MonoBehaviour
             float rotationThisFrame = speed * Time.deltaTime;
 
             // Add the rotation to the needle
-            myNeedle.transform.Rotate(Vector3.forward, rotationThisFrame);
+            myNeedle.transform.Rotate(Vector3.back, rotationThisFrame);
 
             // Update the angle variable to keep track of the current rotation
             angle += rotationThisFrame;
@@ -98,16 +98,16 @@ public class DeadlightController : MonoBehaviour
 
         if (angle >= perfectZone.minAngle && angle <= perfectZone.maxAngle)
         {
-            punctuation += 200;
+            punctuation += 100;
 
         }
         else if (angle >= goodZone.minAngle && angle <= goodZone.maxAngle)
         {
-            punctuation += 100;
+            punctuation += 50;
         }
         else
         {
-            punctuation -= 150;
+            punctuation -= 75;
         }
         Debug.Log(punctuation);
 
