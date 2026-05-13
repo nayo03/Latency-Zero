@@ -35,7 +35,7 @@ public class UIMainManager : MonoBehaviour
     //                 BOTONES PARA EL MENÚ PRINCIPAL 
     // ---------------------------------------------------------------------
 
-    
+
     public void Boton_IniciarHistoria() // EN USO EN MAINMENU
     {
 
@@ -149,6 +149,4 @@ public class UIMainManager : MonoBehaviour
             MainManager.Instance.ResetTotal();
         }
     }
-
-
 }
