@@ -89,6 +89,21 @@ public class G2_CollectibleController : MonoBehaviour
             // Bloqueamos inmediatamente para que no cuente dos veces por error
             puedeDarPuntos = false;
 
+            // ---------- SONIDO ----------
+            if (AudioManager.Instance != null)
+            {
+                if (isCosmicBread)
+                {
+                    // Sonido para el Pan Cósmico
+                    AudioManager.Instance.PlaySFX("bonus02");
+                }
+                else
+                {
+                    // Sonido para las Estrellas/Monedas
+                    AudioManager.Instance.PlaySFX("bonus01");
+                }
+            }
+
             // ---------- GESTIÓN DE PUNTOS ----------
             // Llamada directa al Singleton del Manager
             if (G2_GameManager.Instance != null)
