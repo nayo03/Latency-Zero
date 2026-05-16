@@ -104,6 +104,12 @@ public class G2_Player : MonoBehaviour
         rb.simulated = false;
 
         // 3. FEEDBACK VISUAL:
+        // Sonido de muerte
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("playerexplosion");
+        }
+
         // Solo creamos explosión si ha sido un choque (la caída es silenciosa)
         if (motivo == TipoMuerte.Choque && explosionPrefab != null)
         {
