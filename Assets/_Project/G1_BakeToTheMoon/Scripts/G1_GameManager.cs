@@ -112,10 +112,32 @@ public class G1_GameManager : MonoBehaviour
         if (punctuation >= 100) calidadObtenida = 2;
         else if (punctuation >= 50) calidadObtenida = 1;
 
-        if (calidadObtenida == 0) uiLocal.IniciarFlashFallo();
+        if (calidadObtenida == 0)
+        {
+            uiLocal.IniciarFlashFallo();
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("playerexplosion");
+            }
+        }
+        if (calidadObtenida == 1)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("bonus01");
+            }
+        }
+        if (calidadObtenida == 2)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("bonus02");
+            }
+        }
 
         uiLocal.IniciarVibracion();
         uiLocal.RenderizarPiezaCohete(intentosActuales, calidadObtenida);
+
 
         intentosActuales++;
         puntosTotales += punctuation;
@@ -171,6 +193,10 @@ public class G1_GameManager : MonoBehaviour
                 RegistrarClickSmasher();
                 uiLocal.FeedbackPulsacionBoton();
                 uiLocal.IniciarVibracion();
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX("playerexplosion");
+                }
             }
             yield return null;
         }

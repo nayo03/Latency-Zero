@@ -35,7 +35,14 @@ public class MainManager : MonoBehaviour
     [Header("Recursos Visuales Final")]
     public List<Sprite> fondosFinales; // Añadir los fondos finales
     public List<string> textosFinales; // Textos para las escenas finales por minijuego
-    
+
+    [Header("PRÓLOGO GLOBAL DE LA HISTORIA")]
+    public Sprite spritePrologoComic;
+    [TextArea(5, 15)] public string textoStarWarsIntro;
+
+    private enum EstadoPrologo { StarWars, Comic, Completado }
+    private EstadoPrologo prologoActual = EstadoPrologo.StarWars;
+
 
     private void Awake()
     {
@@ -58,18 +65,39 @@ public class MainManager : MonoBehaviour
     // ===============================================================================================
     public void ContinuarHistoria()
     {
-        // Si el índice es 0 y acabamos de empezar (no estamos mostrando final), 
-        // forzamos la carga de la escena "Transition" para ver la primera Intro.
-        if (indiceEscenasIniciales == 0 && !mostrandoFinal && SceneManager.GetActiveScene().name != "Transition")
+        // =========================================================================
+        // 1. INTERCEPCIÓN DEL PRÓLOGO GLOBAL DEL JUEGO
+        // =========================================================================
+        if (prologoActual != EstadoPrologo.Completado)
         {
-            SceneManager.LoadScene("Transition");
-            return; // Salimos para que no ejecute lo de abajo
+            string escenaActiva = SceneManager.GetActiveScene().name;
+
+            // Paso A: Si venimos del menú principal, lanzamos las letras de Star Wars
+            if (escenaActiva != "StarWarsIntro"  && escenaActiva != "Transition")
+            {
+                prologoActual = EstadoPrologo.StarWars;
+                SceneManager.LoadScene("StarWarsIntro");
+                return;
+            }
+            // Paso B: Al terminar Star Wars, pasamos a la escena del Cómic
+            else if (escenaActiva == "StarWarsIntro")
+            {
+                prologoActual = EstadoPrologo.Comic;
+                SceneManager.LoadScene("Transition");
+                return;
+            }
+            // Paso C: Al terminar el Cómic, cerramos el prólogo y vamos a la Transition oficial
+            else if (escenaActiva == "Transition" && prologoActual == EstadoPrologo.Comic)
+            {
+                prologoActual = EstadoPrologo.Completado;
+                SceneManager.LoadScene("Transition"); // <-- Recargamos Transition para ver las instrucciones del Minijuego 1
+                return;
+            }
         }
 
         // LOGICA DE FLUJO NORMAL: Si NO estamos mostrando el final, significa que toca CARGAR EL JUEGO
         if (!mostrandoFinal)
         {
-            // Cargamos el minijuego de la lista
             SceneManager.LoadScene(listaEscenasIniciales[indiceEscenasIniciales]);
             mostrandoFinal = true;
         }
@@ -105,15 +133,26 @@ public class MainManager : MonoBehaviour
     // Devuelve el TEXTO que se tiene que mostrar (escrito en el Inspector) mirando el indiceEscenasIniciales y mostrandoFinal true/false.
     public string ObtenerTextoHistoria()
     {
-        if (mostrandoFinal) return textosFinales[indiceEscenasIniciales]; // Si el nivel ya terminó, devuelve el texto de "final" del nivel actual
-        return textosIntros[indiceEscenasIniciales]; // Si el nivel va a empezar, devuelve el texto de "introducción" del nivel actual
+        // 1. Si el prólogo está en la intro galáctica, devolvemos su texto dedicado
+        if (prologoActual == EstadoPrologo.StarWars) return textoStarWarsIntro;
+
+        // 2. Si el prólogo está mostrando el cómic, devolvemos texto vacío
+        if (prologoActual == EstadoPrologo.Comic) return "";
+
+        // 3. Flujo normal para los minijuegos
+        if (mostrandoFinal) return textosFinales[indiceEscenasIniciales];
+        return textosIntros[indiceEscenasIniciales];
     }
 
     // Devuelve el FONDO que se tiene que mostrar (sprite del Inspector) mirando el indiceEscenasIniciales y mostrandoFinal true/false.
     public Sprite ObtenerFondoActual()
     {
-        if (mostrandoFinal) return fondosFinales[indiceEscenasIniciales]; // Si el nivel ya terminó, devuelve el fondo de "final"
-        return fondosIntros[indiceEscenasIniciales]; // Si el nivel va a empezar, devuelve el fondo de "introducción"
+        // 1. Si el prólogo está en la fase de cómic, devolvemos tu sprite del prólogo
+        if (prologoActual == EstadoPrologo.Comic) return spritePrologoComic;
+
+        // 2. Flujo normal de los minijuegos
+        if (mostrandoFinal) return fondosFinales[indiceEscenasIniciales];
+        return fondosIntros[indiceEscenasIniciales];
     }
 
     // ===============================================================================================
@@ -229,6 +268,7 @@ public class MainManager : MonoBehaviour
         puntosEnEsteMinijuego = 0;
         if (baseDeDatos != null) baseDeDatos.ResetearProgreso(); // Borra los puntos de la "base de datos"
         puntosTotalesVisualizar = 0;
+        prologoActual = EstadoPrologo.StarWars;
     }
 
     private void LimpiarHardwareYMemoria()
