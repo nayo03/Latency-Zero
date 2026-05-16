@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 // ==============================================================================
 // >>> G1_GAMEMANAGER: Controlador espec�fico del Minijuego 1
@@ -157,7 +158,15 @@ public class G1_GameManager : MonoBehaviour
             timer -= Time.deltaTime;
             uiLocal.ActualizarCronometroSmasher(timer);
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            bool smashPressed = false;
+
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+                smashPressed = true;
+
+            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+                smashPressed = true;
+
+            if (smashPressed)
             {
                 RegistrarClickSmasher();
                 uiLocal.FeedbackPulsacionBoton();
