@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 // ==============================================================================
 // >>> G1_GAMEMANAGER: Controlador espec�fico del Minijuego 1
@@ -111,10 +112,32 @@ public class G1_GameManager : MonoBehaviour
         if (punctuation >= 100) calidadObtenida = 2;
         else if (punctuation >= 50) calidadObtenida = 1;
 
-        if (calidadObtenida == 0) uiLocal.IniciarFlashFallo();
+        if (calidadObtenida == 0)
+        {
+            uiLocal.IniciarFlashFallo();
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("playerexplosion");
+            }
+        }
+        if (calidadObtenida == 1)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("bonus01");
+            }
+        }
+        if (calidadObtenida == 2)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("bonus02");
+            }
+        }
 
         uiLocal.IniciarVibracion();
         uiLocal.RenderizarPiezaCohete(intentosActuales, calidadObtenida);
+
 
         intentosActuales++;
         puntosTotales += punctuation;
@@ -157,11 +180,23 @@ public class G1_GameManager : MonoBehaviour
             timer -= Time.deltaTime;
             uiLocal.ActualizarCronometroSmasher(timer);
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            bool smashPressed = false;
+
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+                smashPressed = true;
+
+            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+                smashPressed = true;
+
+            if (smashPressed)
             {
                 RegistrarClickSmasher();
                 uiLocal.FeedbackPulsacionBoton();
                 uiLocal.IniciarVibracion();
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX("playerexplosion");
+                }
             }
             yield return null;
         }

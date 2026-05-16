@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.InputSystem;
 
 public class DeadlightController : MonoBehaviour
 {
@@ -53,21 +54,19 @@ public class DeadlightController : MonoBehaviour
             angle += rotationThisFrame;
             angle %= 360f; // Keep the angle between 0 and 360 degrees
 
+            bool inputDetected = false;
+
             //Read user input to stop the needle rotation
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+                inputDetected = true;
+
+            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+                inputDetected = true;
+
+            // Start the coroutine to handle the result of the player's attempt
+            if (inputDetected)
             {
-                // Start the coroutine to handle the result of the player's attempt
                 StartCoroutine(ResultRoutine());
-
-            }
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                if (touch.phase == TouchPhase.Began)
-                {
-                    StartCoroutine(ResultRoutine());
-                }
             }
         }
         
