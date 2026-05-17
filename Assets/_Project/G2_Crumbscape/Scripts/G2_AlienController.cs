@@ -13,6 +13,10 @@ public class G2_AlienController : MonoBehaviour
     [SerializeField] private float entrySpeed = 2f;    // La prisa que tiene por entrar a pantalla
     [SerializeField] private int puntosAlien = 25;     // Los puntos que da al jugador al morir
 
+    [Header("Balanceo")]
+    [SerializeField] private float swayAngle = 6f;      // Grados de inclinación
+    [SerializeField] private float swaySpeed = 2.5f;      // Velocidad del balanceo
+
     [Header("Efectos Visuales")]
     [SerializeField] private GameObject explosionPrefab; // El objeto de la explosión (partículas)
 
@@ -69,21 +73,7 @@ public class G2_AlienController : MonoBehaviour
         // FILTRO 1: Si no hay jugador o el tiempo está parado (pausa), no hacemos nada
         if (playerTransform == null || Time.timeScale == 0f) return;
 
-        // FILTRO 2: Si el jugador ha muerto, el alien sube verticalmente
-        if (playerScript != null && playerScript.isDead)
-        {
-            // Mueve hacia arriba en el eje Y
-            transform.Translate(Vector2.up * followSpeed * Time.deltaTime);
-
-            // Si se sale de pantalla se oculta
-            if (transform.position.y > 6f)
-            {
-                OnDieSilencioso();
-            }
-            return; 
-        }
-
-        // FILTRO 3: Si el alien está destruido, restamos tiempo al reloj de renacimiento
+        // FILTRO 2: Si el alien está destruido, restamos tiempo al reloj de renacimiento
         if (isDead)
         {
             respawnTimer -= Time.deltaTime; // Restamos tiempo real (segundos)
@@ -93,6 +83,9 @@ public class G2_AlienController : MonoBehaviour
 
         // Si ha pasado todos los filtros, movemos al alien
         ManejarMovimiento();
+
+        // Balanceo
+        ManejarBalanceo();
     }
 
     // ==========================================================================
@@ -126,6 +119,12 @@ public class G2_AlienController : MonoBehaviour
 
             transform.position = new Vector2(positionX, newY); // Aplicamos la altura nueva manteniendo la X siempre en el mismo punto (positionX)
         }
+    }
+
+    private void ManejarBalanceo()
+    {
+        float angle = Mathf.Sin(Time.time * swaySpeed) * swayAngle;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     // ==========================================================================
@@ -184,17 +183,5 @@ public class G2_AlienController : MonoBehaviour
         if (explosionPrefab != null) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         if (spriteRenderer != null) spriteRenderer.enabled = false;
         if (thrusterEffect != null) thrusterEffect.SetActive(false);
-    }
-
-    // ==========================================================================
-    // PROCESO DE MUERTE DEL JUGADOR (Sube y desaparece)
-    // ==========================================================================
-    private void OnDieSilencioso()
-    {
-        isDead = true;
-        respawnTimer = respawnTime;
-        if (spriteRenderer != null) spriteRenderer.enabled = false;
-        if (thrusterEffect != null) thrusterEffect.SetActive(false);
-        if (alienCollider != null) alienCollider.enabled = false;
     }
 }

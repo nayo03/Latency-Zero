@@ -171,47 +171,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: spritePrologoComic
-      value: 
-      objectReference: {fileID: 21300000, guid: d4073f84714283f458f59ac3e3c4017d, type: 3}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: textoStarWarsIntro
-      value: "Son tiempos de aparente calma en el planeta. En un tranquilo y apartado
-        pueblo, un humilde PANADERO custodia un secreto que desaf\xEDa a la gravedad.
-        Mientras sus d\xEDas transcurren entre harina y hornos, sus noches se consumen
-        en la clandestinidad de su garaje, persiguiendo un sue\xF1o imposible: alcanzar
-        las estrellas y hallar vida m\xE1s all\xE1 de nuestro mundo. Con ingenio,
-        chatarra reciclada y una determinaci\xF3n inquebrantable, ha levantado pieza
-        a pieza su propia astronave.\n\nLa paz se desvanece de golpe. Una misteriosa
-        y hostil AMENAZA ALIEN\xCDGENA ha irrumpido en el sistema solar con una violencia
-        devastadora. En un ataque rel\xE1mpago, las comunicaciones caen, las estaciones
-        orbitales son reducidas a cenizas y las misiones oficiales de la NASA quedan
-        completamente aniquiladas. Sin cient\xEDficos, sin tecnolog\xEDa avanzada
-        y sumida en el p\xE1nico, la humanidad se encuentra indefensa ante el invasor.\n\nCon
-        los recursos globales reducidos a escombros, el gobierno busca desesperadamente
-        una alternativa desesperada. Es entonces cuando los servicios de inteligencia
-        descubren una ins\xF3lita lectura de energ\xEDa en un garaje residencial.
-        La \xFAltima l\xEDnea de defensa de la Tierra no viste traje militar ni ostenta
-        galones... lleva un delantal, las manos manchadas de harina y un cohete casi
-        listo para despegar hacia lo desconocido...."
-      objectReference: {fileID: 0}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: fondosIntroG1.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: textosIntroG1.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'fondosIntros.Array.data[0]'
-      value: 
-      objectReference: {fileID: 21300000, guid: c61b1f89cd8ad7943b3b38a5f9d15f3e, type: 3}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'fondosIntroG1.Array.data[1]'
-      value: 
-      objectReference: {fileID: 21300000, guid: d4073f84714283f458f59ac3e3c4017d, type: 3}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS

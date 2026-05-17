@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4b5b30609a2e5b74b930df256d346c9f
+guid: 8d119af281cd6d04394e60f6e3efc5f5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,12 +110,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: G2_botones_0
+      name: botones_pressed_0
       rect:
         serializedVersion: 2
-        x: 31
+        x: 30
         y: 780
-        width: 584
+        width: 588
         height: 141
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -125,19 +125,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cfccfba77e263aa42a6c76624ee1759e
-      internalID: 1636783821
+      spriteID: 9cfe9a30ad6a86c43be32a9819d09463
+      internalID: 730128577
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G2_botones_1
+      name: botones_pressed_1
       rect:
         serializedVersion: 2
         x: 30
         y: 629
-        width: 585
+        width: 586
         height: 139
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -147,19 +147,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 698ec04c9084d7e4f956a4716c5556be
-      internalID: -1081735198
+      spriteID: 237c34eb967063a498e5574621ccffef
+      internalID: 1388763428
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G2_botones_2
+      name: botones_pressed_2
       rect:
         serializedVersion: 2
-        x: 31
+        x: 30
         y: 474
-        width: 584
+        width: 588
         height: 141
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -169,14 +169,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0cf27e978ef66e14d8501caa9c6b0268
-      internalID: 1513568392
+      spriteID: a8be5160d35224a4c980175e2dff88de
+      internalID: -1324776911
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G2_botones_3
+      name: botones_pressed_3
       rect:
         serializedVersion: 2
         x: 18
@@ -191,19 +191,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c9bdaa97154b084a83251e604d7f845
-      internalID: -1477616151
+      spriteID: 1a2454c251de7254b871aafe154fda2f
+      internalID: -1578631322
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G2_botones_4
+      name: botones_pressed_4
       rect:
         serializedVersion: 2
         x: 18
         y: 170
-        width: 588
+        width: 587
         height: 139
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -213,14 +213,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75bfaac89aeb2854ea095630e3372f2c
-      internalID: -76982182
+      spriteID: 63daba7f981a98947b19e7ba5157eea5
+      internalID: 1258949849
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: G2_botones_5
+      name: botones_pressed_5
       rect:
         serializedVersion: 2
         x: 18
@@ -235,8 +235,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e61e73b12cf780b4f825bcdd1746093a
-      internalID: -1583540546
+      spriteID: d3cfcbb5ca777b14483f79aa32950d55
+      internalID: 297953682
       vertices: []
       indices: 
       edges: []
@@ -245,7 +245,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a7058603f2a0b484fa97fd5fdbe69c0f
+    spriteID: d6ef75ac46f9727438ba2c33dcb51d60
     internalID: 0
     vertices: []
     indices: 
@@ -257,12 +257,12 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      G2_botones_0: 1636783821
-      G2_botones_1: -1081735198
-      G2_botones_2: 1513568392
-      G2_botones_3: -1477616151
-      G2_botones_4: -76982182
-      G2_botones_5: -1583540546
+      botones_pressed_0: 730128577
+      botones_pressed_1: 1388763428
+      botones_pressed_2: -1324776911
+      botones_pressed_3: -1578631322
+      botones_pressed_4: 1258949849
+      botones_pressed_5: 297953682
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
