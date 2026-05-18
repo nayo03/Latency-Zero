@@ -212,6 +212,10 @@ PrefabInstance:
       propertyPath: 'fondosIntroG1.Array.data[1]'
       value: 
       objectReference: {fileID: 21300000, guid: d4073f84714283f458f59ac3e3c4017d, type: 3}
+    - target: {fileID: 2619292015402544577, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: m_Volume
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS
