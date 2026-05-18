@@ -56,8 +56,8 @@ public class G2_Spawner : MonoBehaviour
         Camera cam = Camera.main;
         if (cam != null)
         {
-            limitY = cam.orthographicSize; // Obtenemos el radio vertical de la cámara
-            spawnX = (cam.orthographicSize * cam.aspect) + 1f; // Calculamos el borde X + margen de salida
+            limitY = 5f;
+            spawnX = 12f;
         }
 
         // --- INICIO DE CICLOS DE GENERACIÓN ---

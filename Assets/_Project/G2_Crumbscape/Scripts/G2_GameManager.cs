@@ -25,7 +25,7 @@ public class G2_GameManager : MonoBehaviour
     private float tiempoRestante;           // El reloj interno que descuenta segundos
     private bool juegoTerminado = false;    // Si es true, detiene el reloj y la suma de puntos
     private int puntosTotales = 0;          // Puntos acumulados en la partida actual
-    private bool juegoIniciado = false;
+    public bool juegoIniciado = false;
     private static bool yaHaDadoAlStart = false;
 
     [SerializeField] public int NivelActual = 1; // Nivel que estamos jugando (público para el Spawner)
@@ -127,16 +127,11 @@ public class G2_GameManager : MonoBehaviour
         // 3. Desactivamos el panel
         if (G2_StartPanel != null) G2_StartPanel.SetActive(false);
 
-        // 4. Forzamos a que la nave no se duerma
-        G2_Player player = FindAnyObjectByType<G2_Player>();
+        // 4. Transportamos la nave a su sitio
+        G2_Player player = Object.FindAnyObjectByType<G2_Player>();
         if (player != null)
         {
-            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.simulated = true; // Aseguramos que esté simulando
-                rb.WakeUp();
-            }
+            player.IniciarPosicionJugador();
         }
     }
 
