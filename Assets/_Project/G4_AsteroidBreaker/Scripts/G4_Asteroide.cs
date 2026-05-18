@@ -30,12 +30,12 @@ public class G4_Asteroide : MonoBehaviour
 
     public void Explotar()
     {
-        // CHIVATO 1: Para saber si el juego detecta que has tocado el asteroide
+        
         Debug.Log("¡ENTRANDO EN EXPLOOTAR! El juego ha detectado la destrucción del asteroide.");
 
         if (clipExplosion != null)
         {
-            // CHIVATO 2: Para confirmar que el archivo de audio está bien cargado en la casilla
+            
             Debug.Log("Sonido detectado con éxito: " + clipExplosion.name);
 
             GameObject altavozTemporal = new GameObject("Altavoz_Explosion");
@@ -47,14 +47,14 @@ public class G4_Asteroide : MonoBehaviour
         
             sourceTemporal.Play();
         
-            // CHIVATO 3: Para confirmar que el altavoz virtual le ha dado al Play
+            
             Debug.Log("¡Altavoz creado y sonido reproduciéndose en 2D!");
 
             Destroy(altavozTemporal, clipExplosion.length);
         }
         else
         {
-            // CHIVATO ERROR: Esto brillará en amarillo si se te olvidó arrastrar el sonido al Prefab
+            
             Debug.LogWarning("¡Alerta! 'clipExplosion' está VACÍO en el Inspector de este asteroide.");
         }
 
