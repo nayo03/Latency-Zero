@@ -229,25 +229,25 @@ MonoBehaviour:
   m_Name: Android
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
   features:
-  - {fileID: 2806015671230006126}
-  - {fileID: 4021945821120826032}
-  - {fileID: 862667622661135445}
-  - {fileID: -2882969484123203480}
-  - {fileID: -7399894746215393961}
-  - {fileID: 2262240547326126724}
-  - {fileID: 1750495016539730895}
-  - {fileID: 5207414033686173823}
-  - {fileID: 1638510264645754033}
-  - {fileID: -911296804232375872}
-  - {fileID: -5116925095895112618}
   - {fileID: -7482159037161788426}
+  - {fileID: 7531970170278277163}
+  - {fileID: -7399894746215393961}
+  - {fileID: -5116925095895112618}
+  - {fileID: 1638510264645754033}
+  - {fileID: 5282119671555596097}
+  - {fileID: 3203463882202143129}
   - {fileID: -7611788845662726087}
   - {fileID: -6904383830165901070}
-  - {fileID: 2651520625211408283}
-  - {fileID: 3203463882202143129}
-  - {fileID: 5282119671555596097}
+  - {fileID: -2882969484123203480}
   - {fileID: 6820750477236794241}
-  - {fileID: 7531970170278277163}
+  - {fileID: -911296804232375872}
+  - {fileID: 5207414033686173823}
+  - {fileID: 862667622661135445}
+  - {fileID: 4021945821120826032}
+  - {fileID: 1750495016539730895}
+  - {fileID: 2262240547326126724}
+  - {fileID: 2806015671230006126}
+  - {fileID: 2651520625211408283}
   customLoaderName: 
   m_renderMode: 1
   m_latencyOptimization: 0
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
   m_useOpenXRPredictedTime: 0
 --- !u!114 &-4237036911046482028
@@ -435,7 +435,7 @@ MonoBehaviour:
   lateLatchingDebug: 0
   optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegions: 0
+  m_hasMigratedMultiviewRenderRegions: 1
   spacewarpMotionVectorTextureFormat: 0
 --- !u!114 &-2809620317307865331
 MonoBehaviour:
@@ -450,25 +450,25 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
   features:
-  - {fileID: -3810362495674998026}
-  - {fileID: -5349340003711764879}
   - {fileID: 6913769877372444618}
-  - {fileID: -3141555846026448691}
-  - {fileID: -7563038554846975651}
-  - {fileID: 4643469633012653011}
-  - {fileID: 8060344957960942016}
-  - {fileID: -7880720667951754616}
   - {fileID: -3527652941885779333}
-  - {fileID: 8594697982633584230}
-  - {fileID: -197077435503048991}
-  - {fileID: 2862101502287476320}
-  - {fileID: -718205723179831140}
-  - {fileID: 6552903959513326617}
-  - {fileID: 5851758369321189809}
-  - {fileID: -4237036911046482028}
+  - {fileID: 8060344957960942016}
   - {fileID: -5083584877679526364}
+  - {fileID: -4237036911046482028}
+  - {fileID: 2862101502287476320}
+  - {fileID: 8594697982633584230}
+  - {fileID: 6552903959513326617}
+  - {fileID: -718205723179831140}
   - {fileID: 6711276564930182679}
+  - {fileID: -7880720667951754616}
+  - {fileID: 4643469633012653011}
+  - {fileID: -197077435503048991}
+  - {fileID: -5349340003711764879}
+  - {fileID: -7563038554846975651}
+  - {fileID: -3141555846026448691}
+  - {fileID: -3810362495674998026}
   - {fileID: 3336317168814620613}
+  - {fileID: 5851758369321189809}
   customLoaderName: 
   m_renderMode: 1
   m_latencyOptimization: 0
@@ -481,7 +481,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
   m_useOpenXRPredictedTime: 0
 --- !u!114 &-911296804232375872
@@ -682,7 +682,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 0
   m_useOpenXRPredictedTime: 0
 --- !u!114 &2651520625211408283
