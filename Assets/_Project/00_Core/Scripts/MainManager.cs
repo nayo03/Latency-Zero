@@ -42,6 +42,10 @@ public class MainManager : MonoBehaviour
 
     private enum EstadoPrologo { StarWars, Comic, Completado }
     private EstadoPrologo prologoActual = EstadoPrologo.StarWars;
+    public bool EsFaseComic()
+    {
+        return prologoActual == EstadoPrologo.Comic;
+    }
 
 
     private void Awake()

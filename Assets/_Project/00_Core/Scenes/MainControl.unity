@@ -171,6 +171,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: textoStarWarsIntro
+      value: "\xA1INVASI\xD3N EN EL SISTEMA SOLAR! Una devastadora AMENAZA ALIEN\xCDGENA
+        ha aniquilado a la NASA y destruido las defensas globales, dejando a la Tierra
+        indefensa y sumida en el p\xE1nico.\n\nSin tecnolog\xEDa ni ej\xE9rcito,
+        el gobierno detecta una ins\xF3lita lectura de energ\xEDa en un garaje residencial:
+        un humilde PANADERO ha construido en secreto su propia astronave con chatarra
+        reciclada.\n\nCon las manos manchadas de harina y el motor en marcha, \xA1este
+        inesperado h\xE9roe despega hacia lo desconocido como la \xFAltima esperanza
+        de la humanidad!..."
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosIntros.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS

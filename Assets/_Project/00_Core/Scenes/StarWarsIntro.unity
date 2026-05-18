@@ -321,8 +321,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   contenedorTexto: {fileID: 1849623937}
   componenteTexto: {fileID: 1849623938}
-  velocidadMovimiento: 55
-  tiempoDuracion: 30
+  velocidadMovimiento: 40
+  tiempoDuracion: 40
 --- !u!4 &1419830903
 Transform:
   m_ObjectHideFlags: 0
@@ -519,8 +519,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
