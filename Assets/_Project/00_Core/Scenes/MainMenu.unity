@@ -610,7 +610,6 @@ GameObject:
   m_Component:
   - component: {fileID: 316874718}
   - component: {fileID: 316874717}
-  - component: {fileID: 316874716}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -618,14 +617,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &316874716
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316874715}
-  m_Enabled: 1
 --- !u!20 &316874717
 Camera:
   m_ObjectHideFlags: 0
@@ -740,10 +731,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1397,6 +1388,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosIntros.Array.data[1]'
+      value: Mejor no acabar hecho migas...
+      objectReference: {fileID: 0}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS
@@ -1444,8 +1439,24 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4967152883214753510, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1818738666}
   m_SourcePrefab: {fileID: 100100000, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+--- !u!1 &1818738665 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4967152883214753510, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+  m_PrefabInstance: {fileID: 1818738664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!81 &1818738666
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818738665}
+  m_Enabled: 1
 --- !u!1001 &7844749089814855761
 PrefabInstance:
   m_ObjectHideFlags: 0

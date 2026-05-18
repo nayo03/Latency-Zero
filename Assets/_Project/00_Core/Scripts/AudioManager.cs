@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
     [System.Serializable]
     public struct SoundEffect
     {
-        public string nombre;  // Identificador del sonido (ej: "Explosion")
+        public string nombre;  // Identificador del sonido
         public AudioClip clip; // Archivo de audio asignado
     }
 
@@ -39,10 +39,11 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // Nota: Se recomienda que el objeto padre tenga el DontDestroyOnLoad
         }
-        else
+        else if (Instance != this) // Si ya hay una instancia y no soy yo..
         {
+            // Limpiamos la referencia  
+            Instance.sfxSource.Stop();
             Destroy(gameObject);
         }
     }

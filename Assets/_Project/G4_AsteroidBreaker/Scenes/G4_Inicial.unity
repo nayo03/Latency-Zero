@@ -582,7 +582,6 @@ GameObject:
   m_Component:
   - component: {fileID: 740436762}
   - component: {fileID: 740436767}
-  - component: {fileID: 740436766}
   - component: {fileID: 740436765}
   - component: {fileID: 740436764}
   - component: {fileID: 740436763}
@@ -751,14 +750,6 @@ MonoBehaviour:
   m_LightEstimation: 0
   m_FacingDirection: 1
   m_RenderMode: 0
---- !u!81 &740436766
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740436761}
-  m_Enabled: 1
 --- !u!20 &740436767
 Camera:
   m_ObjectHideFlags: 0
@@ -768,7 +759,7 @@ Camera:
   m_GameObject: {fileID: 740436761}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2

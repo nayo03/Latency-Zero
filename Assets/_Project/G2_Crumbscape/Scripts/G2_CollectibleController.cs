@@ -9,7 +9,7 @@ public class G2_CollectibleController : MonoBehaviour
     [Header("Configuración")]
     public float speedX = 3f;
     public GameObject StarsEffectPrefab;
-    private float deactivateAtX = -5f;
+    private float deactivateAtX = -12f;
 
     // ----------- PUNTUACIÓN -----------
     [Header("Puntuación")]
@@ -21,6 +21,7 @@ public class G2_CollectibleController : MonoBehaviour
     [SerializeField] private float attractionRange = 3f; // Distancia de detección
     [SerializeField] private float magnetSpeed = 6f;     // Velocidad de succión
     private Transform playerTransform;
+    private G2_Player playerScript; // Para que cuando muera desaparezca
 
     // ==========================================================================
     // ----------- PREPARACIÓN -----------
@@ -29,7 +30,11 @@ public class G2_CollectibleController : MonoBehaviour
     {
         // Buscamos al jugador una vez al inicio (Awake es más seguro que Start aquí)
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
+        if (player != null)
+        {
+            playerTransform = player.transform;
+            playerScript = player.GetComponent<G2_Player>(); 
+        }
     }
 
     // Al activarse desde el Spawner, habilitamos la posibilidad de dar puntos
@@ -51,6 +56,18 @@ public class G2_CollectibleController : MonoBehaviour
     void Update()
     {
         if (Time.timeScale == 0) return; // Por si se pausa el juego
+
+        // Cuando el jugador muera desaparecerán las estrellas atmbien
+        if (playerScript != null && playerScript.isDead)
+        {
+            puedeDarPuntos = false;
+            if (StarsEffectPrefab != null)
+            {
+                Instantiate(StarsEffectPrefab, transform.position, Quaternion.identity);
+            }
+            gameObject.SetActive(false);
+            return;
+        }
 
         // 1. MOVIMIENTO BASE: Siempre se desplaza a la izquierda
         transform.Translate(Vector2.left * speedX * Time.deltaTime, Space.World);
@@ -88,6 +105,21 @@ public class G2_CollectibleController : MonoBehaviour
         {
             // Bloqueamos inmediatamente para que no cuente dos veces por error
             puedeDarPuntos = false;
+
+            // ---------- SONIDO ----------
+            if (AudioManager.Instance != null)
+            {
+                if (isCosmicBread)
+                {
+                    // Sonido para el Pan Cósmico
+                    AudioManager.Instance.PlaySFX("bonus02");
+                }
+                else
+                {
+                    // Sonido para las Estrellas/Monedas
+                    AudioManager.Instance.PlaySFX("bonus01");
+                }
+            }
 
             // ---------- GESTIÓN DE PUNTOS ----------
             // Llamada directa al Singleton del Manager
