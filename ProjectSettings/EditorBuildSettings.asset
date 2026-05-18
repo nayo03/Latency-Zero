@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/00_Core/Scenes/PuntuacionFinal.unity
     guid: 0fd0e7f6dba011f47a57db526666054a
+  - enabled: 1
+    path: Assets/_Project/00_Core/Scenes/StarWarsIntro.unity
+    guid: 81759c6e0869bc44ca36fea573eb1d57
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 431a4290d01cce949a8cf50368295f6a, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

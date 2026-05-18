@@ -37,7 +37,18 @@ public class G2_Player : MonoBehaviour
 
         Transform t = transform.Find("PlayerThruster"); // Buscamos el fuego del motor como hijo
         if (t != null) { thrusterEffect = t.gameObject; } // Si existe, lo guardamos
-        
+
+        // Si el juego NO ha iniciado (primera partida, esperando el botón Start)
+        if (G2_GameManager.Instance != null && !G2_GameManager.Instance.juegoIniciado)
+        {
+            // Congelamos la nave arriba en el cielo para que espere al botón
+            if (rb != null) rb.bodyType = RigidbodyType2D.Static;
+        }
+        else
+        {
+            // Si el juego YA ha iniciado (reinicios tras morir), la nave aparece directa en su sitio de juego
+            IniciarPosicionJugador();
+        }
     }
 
     // ==========================================================================
@@ -60,11 +71,23 @@ public class G2_Player : MonoBehaviour
         }
 
         // 4. Límite del techo (Solo funciona si el juego ha empezado)
-        if (transform.position.y > 5.0f)
+        if (transform.position.y > 4.6f)
         {
-            transform.position = new Vector3(transform.position.x, 5.0f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, 4.6f, transform.position.z);
             if (rb.linearVelocity.y > 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         }
+    }
+
+    // ==========================================================================
+    // POSICIÓN NAVE
+    // ==========================================================================
+    public void IniciarPosicionJugador()
+    {
+        // Teletransportamos la nave a su sitio de juego en horizontal (ej: X=-5, Y=0)
+        transform.position = new Vector2(-4.51f, 0f);
+
+        // La volvemos a hacer dinámica para que caiga y responda a los saltos
+        if (rb != null) rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
     // ==========================================================================
@@ -104,6 +127,12 @@ public class G2_Player : MonoBehaviour
         rb.simulated = false;
 
         // 3. FEEDBACK VISUAL:
+        // Sonido de muerte
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("playerexplosion");
+        }
+
         // Solo creamos explosión si ha sido un choque (la caída es silenciosa)
         if (motivo == TipoMuerte.Choque && explosionPrefab != null)
         {

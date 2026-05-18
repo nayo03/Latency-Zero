@@ -9,9 +9,13 @@ public class G2_AlienController : MonoBehaviour
     [Header("Ajustes de Movimiento")]
     [SerializeField] private float followSpeed = 1.5f; // Lo rápido que sube/baja para seguir al jugador
     [SerializeField] private float respawnTime = 2f;   // Segundos de espera tras explotar
-    [SerializeField] private float positionX = -2f;    // El punto exacto de la pantalla donde se queda
+    [SerializeField] private float positionX = -7.12f;    // El punto exacto de la pantalla donde se queda
     [SerializeField] private float entrySpeed = 2f;    // La prisa que tiene por entrar a pantalla
     [SerializeField] private int puntosAlien = 25;     // Los puntos que da al jugador al morir
+
+    [Header("Balanceo")]
+    [SerializeField] private float swayAngle = 6f;      // Grados de inclinación
+    [SerializeField] private float swaySpeed = 2.5f;      // Velocidad del balanceo
 
     [Header("Efectos Visuales")]
     [SerializeField] private GameObject explosionPrefab; // El objeto de la explosión (partículas)
@@ -69,10 +73,7 @@ public class G2_AlienController : MonoBehaviour
         // FILTRO 1: Si no hay jugador o el tiempo está parado (pausa), no hacemos nada
         if (playerTransform == null || Time.timeScale == 0f) return;
 
-        // FILTRO 2: Si el jugador ha muerto, el alien deja de moverse por respeto
-        if (playerScript != null && playerScript.isDead) return;
-
-        // FILTRO 3: Si el alien está destruido, restamos tiempo al reloj de renacimiento
+        // FILTRO 2: Si el alien está destruido, restamos tiempo al reloj de renacimiento
         if (isDead)
         {
             respawnTimer -= Time.deltaTime; // Restamos tiempo real (segundos)
@@ -82,6 +83,9 @@ public class G2_AlienController : MonoBehaviour
 
         // Si ha pasado todos los filtros, movemos al alien
         ManejarMovimiento();
+
+        // Balanceo
+        ManejarBalanceo();
     }
 
     // ==========================================================================
@@ -105,6 +109,7 @@ public class G2_AlienController : MonoBehaviour
                 isEntering = false;
 
                 if (alienCollider != null) alienCollider.enabled = true; // Encendemos el collider para que pueda chocar
+                if (spriteRenderer != null) spriteRenderer.color = Color.white; // Quitar transparencia
             }
         }
         else // Si ya ha terminado de entrar...
@@ -117,13 +122,19 @@ public class G2_AlienController : MonoBehaviour
         }
     }
 
+    private void ManejarBalanceo()
+    {
+        float angle = Mathf.Sin(Time.time * swaySpeed) * swayAngle;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
     // ==========================================================================
     // NACIMIENTO Y RESURRECCIÓN
     // ==========================================================================
     void StartEntry()
     {
-        // 1. Teletransportamos al alien al borde izquierdo (-4)
-        transform.position = new Vector2(-4f, 0f);
+        // 1. Teletransportamos al alien al borde izquierdo (-8)
+        transform.position = new Vector2(-10.5f, 0f);
 
         // 2. Apagamos sus colisiones para que no muera al nacer
         if (alienCollider != null) alienCollider.enabled = false;
@@ -133,6 +144,9 @@ public class G2_AlienController : MonoBehaviour
         isEntering = true;
         if (spriteRenderer != null) spriteRenderer.enabled = true;
         if (thrusterEffect != null) thrusterEffect.SetActive(true);
+
+        // 4. Cambiamos color transparencia
+        if (spriteRenderer != null) spriteRenderer.color = new Color(1f, 1f, 1f, 0.3f);
     }
 
     // ==========================================================================
@@ -154,6 +168,11 @@ public class G2_AlienController : MonoBehaviour
     {
         if (isDead) return; // Seguridad para no morir dos veces
         isDead = true; // Marcamos como muerto
+        // Sonido de muerte
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("alienexplosion");
+        }
         respawnTimer = respawnTime; // Iniciamos cuenta atrás para renacer
         
         if (alienCollider != null) alienCollider.enabled = false; // Apagamos su colisionador 
