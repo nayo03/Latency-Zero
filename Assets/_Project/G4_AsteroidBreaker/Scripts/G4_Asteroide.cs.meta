@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - sonidoExplosion: {fileID: 8300000, guid: 2e97d4266da8ac44c9918b894e94faf5, type: 3}
+  - clipExplosion: {fileID: 8300000, guid: 2e97d4266da8ac44c9918b894e94faf5, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

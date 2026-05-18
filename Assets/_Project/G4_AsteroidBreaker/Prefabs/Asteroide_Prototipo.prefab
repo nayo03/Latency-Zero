@@ -130,6 +130,7 @@ MonoBehaviour:
   tiempoDeVida: 4
   velocidadMin: 1
   velocidadMax: 3
+  clipExplosion: {fileID: 8300000, guid: 2e97d4266da8ac44c9918b894e94faf5, type: 3}
 --- !u!1001 &4001575780456308036
 PrefabInstance:
   m_ObjectHideFlags: 0
