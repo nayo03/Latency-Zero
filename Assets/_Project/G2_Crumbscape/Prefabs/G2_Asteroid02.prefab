@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 7
+  m_SortingOrder: 22
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 06170be8a58e31144a2fb3652f12d076, type: 3}
   m_Color: {r: 0.71359, g: 0.7019608, b: 1, a: 1}
@@ -106,12 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589c62009781b6d4b8d1ffb39b5691a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_AsteroidController
-  speedX: 1.5
+  speedX: 3
   speedY: 1.5
-  verticalRange: 1
+  verticalRange: 0.8
   hasVerticalMovement: 1
   rotationSpeed: 65
-  puntoDeDespawn: -5
+  puntoDeDespawn: -13
 --- !u!50 &3903388818316712748
 Rigidbody2D:
   serializedVersion: 5
@@ -173,5 +173,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.022901893}
-  m_Radius: 1.4193743
+  m_Offset: {x: 0.027947623, y: -0.022901893}
+  m_Radius: 1.3914269

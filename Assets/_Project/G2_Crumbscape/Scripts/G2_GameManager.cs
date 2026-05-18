@@ -25,7 +25,8 @@ public class G2_GameManager : MonoBehaviour
     private float tiempoRestante;           // El reloj interno que descuenta segundos
     private bool juegoTerminado = false;    // Si es true, detiene el reloj y la suma de puntos
     private int puntosTotales = 0;          // Puntos acumulados en la partida actual
-    private bool juegoIniciado = false;
+    public bool juegoIniciado = false;
+    private static bool yaHaDadoAlStart = false;
 
     [SerializeField] public int NivelActual = 1; // Nivel que estamos jugando (público para el Spawner)
     public int NivelesTotales = 3;               // Cuántos niveles hay que pasar para ganar
@@ -61,17 +62,17 @@ public class G2_GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         // 4. Inicio
-        if (NivelActual == 1 && G2_StartPanel != null)
+        if (NivelActual == 1 && G2_StartPanel != null && !yaHaDadoAlStart)
         {
             G2_StartPanel.SetActive(true);
             juegoIniciado = false;
-            Time.timeScale = 0f; // Pausa total al inicio
+            Time.timeScale = 0f; // Pausa total la primera vez que entra
         }
         else
         {
             if (G2_StartPanel != null) G2_StartPanel.SetActive(false);
             juegoIniciado = true;
-            Time.timeScale = 1f;
+            Time.timeScale = 1f; // Empieza directo si ya ha muerto
         }
 
         // 5. Dibujamos los datos iniciales en la interfaz
@@ -115,6 +116,8 @@ public class G2_GameManager : MonoBehaviour
     // =========================================================================
     public void IniciarJuego()
     {
+        yaHaDadoAlStart = true;
+
         // 1. Activamos el tiempo
         Time.timeScale = 1f;
 
@@ -124,16 +127,11 @@ public class G2_GameManager : MonoBehaviour
         // 3. Desactivamos el panel
         if (G2_StartPanel != null) G2_StartPanel.SetActive(false);
 
-        // 4. Forzamos a que la nave no se duerma
-        G2_Player player = FindAnyObjectByType<G2_Player>();
+        // 4. Transportamos la nave a su sitio
+        G2_Player player = Object.FindAnyObjectByType<G2_Player>();
         if (player != null)
         {
-            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.simulated = true; // Aseguramos que esté simulando
-                rb.WakeUp();
-            }
+            player.IniciarPosicionJugador();
         }
     }
 
@@ -241,6 +239,7 @@ public class G2_GameManager : MonoBehaviour
         // Función para limpiar los puntos estáticos (Llamar al salir al Menú)
         NivelCheckpoint = 1;
         PuntosCheckpoint = 0;
+        yaHaDadoAlStart = false;
     }
 
     private void OnDestroy()
