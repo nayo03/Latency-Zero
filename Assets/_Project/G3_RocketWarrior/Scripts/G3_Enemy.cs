@@ -17,6 +17,9 @@ public class G3_Enemy : MonoBehaviour
     private float _timerDisparo;   // Contador regresivo para el disparo
     private bool _modoAtaque;      // True cuando el enemigo va directo al jugador
     private Transform _jugador;    // Referencia al transform del jugador
+    
+    [Header("Puntos")]
+    public int puntosAlMorir = 35; // Puntos que da al ser destruido
 
     void Start()
     {
@@ -84,7 +87,7 @@ public class G3_Enemy : MonoBehaviour
             Destroy(otro.gameObject);
 
             if (G3_GameManager.Instance != null)
-                G3_GameManager.Instance.SumarPuntos(30); // 30 pts por enemigo según GDD
+                G3_GameManager.Instance.SumarPuntos(puntosAlMorir);; // 30 pts por enemigo según GDD
 
             // Avisamos al Spawner que este enemigo ha muerto
             G3_Spawner spawner = Object.FindAnyObjectByType<G3_Spawner>();

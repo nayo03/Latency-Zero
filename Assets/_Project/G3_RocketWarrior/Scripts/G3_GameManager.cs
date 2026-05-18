@@ -166,5 +166,13 @@ public class G3_GameManager : MonoBehaviour
     
         if (Input.GetKeyDown(KeyCode.P))
             PerderPartida();
+        
+        // DEBUG: Pulsa B para saltar al boss
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            G3_Spawner spawner = Object.FindAnyObjectByType<G3_Spawner>();
+            Debug.Log("B");
+            if (spawner != null) spawner.SpawnBoss();
+        }
     }
 }

@@ -13,6 +13,9 @@ public class G3_Player : MonoBehaviour
 
     [Header("Vidas")]
     public int vidas = 3;                     // Vidas iniciales del jugador
+    
+    [Header("Penalización")]
+    public int penalizacionPorBala = 25;
 
     private Vector2 _minBounds;               // Límite inferior-izquierdo de la pantalla
     private Vector2 _maxBounds;               // Límite superior-derecho de la pantalla
@@ -85,18 +88,24 @@ public class G3_Player : MonoBehaviour
         // Si está en periodo de invencibilidad no recibe daño
         if (_invencible) return;
 
+        // Restamos una vida y actualizamos la UI
         vidas--;
         G3_GameManager.Instance.ActualizarVidas(vidas);
+
+        // Penalizamos puntos por cada bala recibida
+        // El valor de penalización se configura desde el Inspector
+        G3_GameManager.Instance.SumarPuntos(-penalizacionPorBala);
+
         Debug.Log("Vidas restantes: " + vidas);
 
         if (vidas <= 0)
         {
-            // Sin vidas — avisamos al GameManager
+            // Sin vidas — avisamos al GameManager para mostrar Game Over
             G3_GameManager.Instance.PerderPartida();
         }
         else
         {
-            // Activamos invencibilidad temporal
+            // Activamos invencibilidad temporal para no recibir daño en cadena
             StartCoroutine(PeriodoInvencibilidad());
         }
     }
@@ -104,8 +113,25 @@ public class G3_Player : MonoBehaviour
     private IEnumerator PeriodoInvencibilidad()
     {
         _invencible = true;
-        // Esperamos el tiempo de invencibilidad
-        yield return new WaitForSeconds(_tiempoInvencible);
+
+        // Buscamos el SpriteRenderer del jugador para hacerlo parpadear
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        float tiempoTranscurrido = 0f;
+        float intervaloFlash = 0.1f; // Cada cuánto cambia la visibilidad
+
+        // Parpadea durante todo el tiempo de invencibilidad
+        while (tiempoTranscurrido < _tiempoInvencible)
+        {
+            // Alterna la visibilidad del sprite
+            sprite.enabled = !sprite.enabled;
+
+            // Esperamos el intervalo antes de cambiar de nuevo
+            yield return new WaitForSeconds(intervaloFlash);
+            tiempoTranscurrido += intervaloFlash;
+        }
+
+        // Nos aseguramos de dejar el sprite visible al acabar
+        sprite.enabled = true;
         _invencible = false;
     }
 
@@ -115,6 +141,16 @@ public class G3_Player : MonoBehaviour
         if (otro.CompareTag("BalaEnemigo") || otro.CompareTag("Enemy"))
         {
             RecibirDaño();
+        }
+    }
+    
+    public void RecuperarVida()
+    {
+        // Recupera una vida sin superar el máximo de 3
+        //if (vidas < 3)
+        {
+            vidas++;
+            G3_GameManager.Instance.ActualizarVidas(vidas);
         }
     }
 }
