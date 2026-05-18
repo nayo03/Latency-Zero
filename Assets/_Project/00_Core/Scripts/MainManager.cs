@@ -40,7 +40,7 @@ public class MainManager : MonoBehaviour
     public Sprite spritePrologoComic;
     [TextArea(5, 15)] public string textoStarWarsIntro;
 
-    private enum EstadoPrologo { StarWars, Comic, Completado }
+    private enum EstadoPrologo { StarWars, Comic, TutorialG1, Completado }
     private EstadoPrologo prologoActual = EstadoPrologo.StarWars;
 
 
@@ -73,7 +73,7 @@ public class MainManager : MonoBehaviour
         {
             string escenaActiva = SceneManager.GetActiveScene().name;
 
-            // Paso A: Si venimos del menú principal, lanzamos las letras de Star Wars
+            //  Si venimos del menú principal, lanzamos las letras de Star Wars
             if (escenaActiva != "StarWarsIntro" && escenaActiva != "Transition")
             {
                 prologoActual = EstadoPrologo.StarWars;
@@ -81,19 +81,26 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene("StarWarsIntro");
                 return;
             }
-            // Paso B: Al terminar Star Wars, pasamos a la escena del Cómic
+            //  Al terminar Star Wars, pasamos a la escena del Cómic
             else if (escenaActiva == "StarWarsIntro")
             {
                 prologoActual = EstadoPrologo.Comic;
                 SceneManager.LoadScene("Transition");
                 return;
             }
-            // Paso C: Al terminar el Cómic, cerramos el prólogo y vamos a la Transition oficial
+            //  Recargamos Transition para mostrar el Tutorial 1
             else if (escenaActiva == "Transition" && prologoActual == EstadoPrologo.Comic)
             {
-                prologoActual = EstadoPrologo.Completado;
+                prologoActual = EstadoPrologo.TutorialG1;
 
                 SceneManager.LoadScene("Transition");
+                return;
+            }
+            else if (escenaActiva == "Transition" && prologoActual == EstadoPrologo.TutorialG1)
+            {
+                prologoActual = EstadoPrologo.Completado;
+                SceneManager.LoadScene(listaEscenasIniciales[indiceEscenasIniciales]);
+                mostrandoFinal = true;
                 return;
             }
         }
@@ -134,6 +141,11 @@ public class MainManager : MonoBehaviour
     // MÉTODOS DE APOYO (UI)
     // =========================================================================
 
+    // Controla si el botón de "Continuar" en la escena de transición debe esperar a que el jugador pulse o no, dependiendo del estado del prólogo
+    public bool RequiereInputManual()
+    {
+        return prologoActual == EstadoPrologo.Comic || prologoActual == EstadoPrologo.TutorialG1;
+    }
     // Devuelve el TEXTO que se tiene que mostrar (escrito en el Inspector) mirando el indiceEscenasIniciales y mostrandoFinal true/false.
     public string ObtenerTextoHistoria()
     {
@@ -142,6 +154,8 @@ public class MainManager : MonoBehaviour
 
         // 2. Si el prólogo está mostrando el cómic, devolvemos texto vacío
         if (prologoActual == EstadoPrologo.Comic) return "";
+
+        if (prologoActual == EstadoPrologo.TutorialG1) return textosIntros[0];
 
         // 3. Flujo normal para los minijuegos
         if (mostrandoFinal) return textosFinales[indiceEscenasIniciales];
@@ -153,6 +167,8 @@ public class MainManager : MonoBehaviour
     {
         // 1. Si el prólogo está en la fase de cómic, devolvemos tu sprite del prólogo
         if (prologoActual == EstadoPrologo.Comic) return spritePrologoComic;
+
+        if (prologoActual == EstadoPrologo.TutorialG1) return fondosIntros[0];
 
         // 2. Flujo normal de los minijuegos
         if (mostrandoFinal) return fondosFinales[indiceEscenasIniciales];
