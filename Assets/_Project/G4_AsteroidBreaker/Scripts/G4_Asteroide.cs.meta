@@ -1,2 +1,12 @@
 fileFormatVersion: 2
 guid: 0105ed6a12d8b0049bd6a79e0d99af3e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - clipExplosion: {fileID: 8300000, guid: 2e97d4266da8ac44c9918b894e94faf5, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
