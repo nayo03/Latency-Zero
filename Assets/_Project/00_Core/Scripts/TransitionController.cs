@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 // =========================================================================
 // >>> TRANSITIONCONTROLLER: Solo se encarga de la VISUALIZACIÓN y TIEMPO
@@ -12,6 +13,8 @@ public class TransitionController : MonoBehaviour
     [Header("Referencias UI")]
     public TextMeshProUGUI textoUI; // Texto de la historia
     public Image imagenFondo; // Imagen de fondo (Sprites 2D)
+
+    private bool cambiandoDeEscena = false;
 
     void Start()
     {
@@ -25,8 +28,14 @@ public class TransitionController : MonoBehaviour
             Sprite fondoNuevo = MainManager.Instance.ObtenerFondoActual();
             if (fondoNuevo != null) imagenFondo.sprite = fondoNuevo;
 
-            // Iniciamos la cuenta atrás para saltar automáticamente al siguiente nivel
-            StartCoroutine(EsperarYPasar());
+            if (!MainManager.Instance.RequiereInputManual())
+            {
+                StartCoroutine(EsperarYPasar());
+            }
+            else
+            {
+                Debug.Log("[TransitionController] Fase agrupada manual activa. Esperando click o espacio de forma indefinida...");
+            }
         }
         else
         {
@@ -34,15 +43,35 @@ public class TransitionController : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (cambiandoDeEscena || MainManager.Instance == null) return;
+
+        // Lectura de inputs unificada (Espacio en teclado o Click/Toque en pantalla)
+        bool solicitarAvance = false;
+
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            solicitarAvance = true;
+
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+            solicitarAvance = true;
+
+        if (solicitarAvance)
+        {
+            AvanzarFlujo();
+        }
+    }
+
     // Controla el tiempo que el usuario tiene para leer antes de cargar el siguiente minijuego permitiendo que salga todo bien por pantalla.
     IEnumerator EsperarYPasar()
     {
-        // Tiempo de lectura ajustable 
-        yield return new WaitForSeconds(3f); 
+        yield return new WaitForSeconds(3f);
+        if (!cambiandoDeEscena) AvanzarFlujo();
+    }
 
-        if (MainManager.Instance != null) // Tiempo agotado, solicitando siguiente escena al MainManager
-        {
-            MainManager.Instance.ContinuarHistoria(); // Llama a la lógica central para decidir cuál es el siguiente nivel 
-        }
+    private void AvanzarFlujo()
+    {
+        cambiandoDeEscena = true;
+        MainManager.Instance.ContinuarHistoria();
     }
 }
