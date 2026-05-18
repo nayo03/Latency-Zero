@@ -53,6 +53,7 @@ public class MainManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Sobrevivirá
+            Screen.orientation = ScreenOrientation.LandscapeLeft; // Fuerza horizontal
         }
         else
         {
@@ -73,9 +74,10 @@ public class MainManager : MonoBehaviour
             string escenaActiva = SceneManager.GetActiveScene().name;
 
             // Paso A: Si venimos del menú principal, lanzamos las letras de Star Wars
-            if (escenaActiva != "StarWarsIntro"  && escenaActiva != "Transition")
+            if (escenaActiva != "StarWarsIntro" && escenaActiva != "Transition")
             {
                 prologoActual = EstadoPrologo.StarWars;
+                Screen.orientation = ScreenOrientation.LandscapeLeft; // Asegura Horizontal en prólogo
                 SceneManager.LoadScene("StarWarsIntro");
                 return;
             }
@@ -90,7 +92,8 @@ public class MainManager : MonoBehaviour
             else if (escenaActiva == "Transition" && prologoActual == EstadoPrologo.Comic)
             {
                 prologoActual = EstadoPrologo.Completado;
-                SceneManager.LoadScene("Transition"); // <-- Recargamos Transition para ver las instrucciones del Minijuego 1
+
+                SceneManager.LoadScene("Transition");
                 return;
             }
         }
@@ -108,18 +111,19 @@ public class MainManager : MonoBehaviour
             {
                 indiceEscenasIniciales++;
                 mostrandoFinal = false;
-                SceneManager.LoadScene("Transition"); // Carga la Intro del siguiente
+
+                SceneManager.LoadScene("Transition");
             }
             else // SI ES EL ÚLTIMO NIVEL (G5)
             {
-                // Si todavía estamos en la escena del juego, primero vamos a Transition (Visual Final)
                 if (SceneManager.GetActiveScene().name != "Transition")
                 {
+                    Screen.orientation = ScreenOrientation.LandscapeLeft; // El final suele ser horizontal
                     SceneManager.LoadScene("Transition");
                 }
                 else
                 {
-                    // Si ya estamos en la Transición y el tiempo ha terminado, vamos a la Puntuación Final.
+                    Screen.orientation = ScreenOrientation.LandscapeLeft;
                     SceneManager.LoadScene("PuntuacionFinal");
                 }
             }
@@ -234,14 +238,14 @@ public class MainManager : MonoBehaviour
 
     public void AbandonarPartida() // Para abandonar partidas (boton)
     {
+        ResetearValores();
+
         if (modoHistoriaActivo)
-        {
-            ResetearValores();
+        {            
             SceneManager.LoadScene("MainMenu"); // O la escena de mapa de historia
         }
         else
         {
-            ResetearValores();
             SceneManager.LoadScene("MenuSeleccionJuegos");
         }
     }
@@ -292,5 +296,4 @@ public class MainManager : MonoBehaviour
         Resources.UnloadUnusedAssets(); // Libera texturas y modelos 3D que ya no se usan
         System.GC.Collect(); // Fuerza al GarbageCollector a limpiar la RAM
     }
-
 }

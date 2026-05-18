@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1944069553566743901}
   - component: {fileID: 8015018544801630782}
-  - component: {fileID: 6945661378807688957}
   - component: {fileID: 6516989605270621902}
+  - component: {fileID: 6384757203764628054}
   m_Layer: 0
   m_Name: G2_Bread
   m_TagString: G2_Bread
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.6, z: 0}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a936e0e0940509f47a87bc8abf73f218, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 378d116e77d250947bccece888bed02c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -93,8 +93,26 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!70 &6945661378807688957
-CapsuleCollider2D:
+--- !u!114 &6516989605270621902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7363365987993140626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632a158e4311a6146a90baf925ffbb27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::G2_CollectibleController
+  speedX: 4.5
+  StarsEffectPrefab: {fileID: 6421028116159756588, guid: 77fb7ee97756a16438cf6d426f527795, type: 3}
+  points: 25
+  isCosmicBread: 1
+  attractionRange: 1
+  magnetSpeed: 5
+--- !u!60 &6384757203764628054
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -127,24 +145,81 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.025089277, y: -0.20116358}
-  m_Size: {x: 8.84343, y: 6.8976774}
-  m_Direction: 1
---- !u!114 &6516989605270621902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7363365987993140626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 632a158e4311a6146a90baf925ffbb27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::G2_CollectibleController
-  speedX: 2.5
-  StarsEffectPrefab: {fileID: 6421028116159756588, guid: 77fb7ee97756a16438cf6d426f527795, type: 3}
-  points: 10
-  isCosmicBread: 1
-  attractionRange: 1
-  magnetSpeed: 5
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 7.29, y: 5.33}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 3.235, y: -2.105}
+      - {x: 3.445, y: -1.735}
+      - {x: 3.425, y: -0.755}
+      - {x: 3.5449998, y: -0.775}
+      - {x: 3.645, y: -0.66499996}
+      - {x: 3.645, y: -0.024999999}
+      - {x: 3.5749998, y: 0.125}
+      - {x: 3.445, y: 0.155}
+      - {x: 3.455, y: 0.42499998}
+      - {x: 3.3049998, y: 0.615}
+      - {x: 3.105, y: 0.815}
+      - {x: 3.0049999, y: 0.85499996}
+      - {x: 3.0049999, y: 1.165}
+      - {x: 2.615, y: 1.555}
+      - {x: 2.325, y: 1.865}
+      - {x: 1.9549999, y: 2.115}
+      - {x: 1.605, y: 2.345}
+      - {x: 1.145, y: 2.585}
+      - {x: 0.825, y: 2.665}
+      - {x: -0.515, y: 2.665}
+      - {x: -0.515, y: 2.565}
+      - {x: -0.85499996, y: 2.565}
+      - {x: -0.875, y: 2.5449998}
+      - {x: -1.095, y: 2.455}
+      - {x: -1.3349999, y: 2.345}
+      - {x: -1.515, y: 2.235}
+      - {x: -1.545, y: 2.105}
+      - {x: -1.775, y: 2.115}
+      - {x: -1.925, y: 1.995}
+      - {x: -2.195, y: 1.755}
+      - {x: -2.5049999, y: 1.3149999}
+      - {x: -2.625, y: 1.305}
+      - {x: -2.735, y: 1.1949999}
+      - {x: -2.855, y: 1.0849999}
+      - {x: -3.0049999, y: 0.835}
+      - {x: -3.225, y: 0.48499998}
+      - {x: -3.455, y: -0.095}
+      - {x: -3.5549998, y: -0.24499999}
+      - {x: -3.645, y: -0.475}
+      - {x: -3.645, y: -1.345}
+      - {x: -3.5249999, y: -1.4649999}
+      - {x: -3.455, y: -1.735}
+      - {x: -3.3149998, y: -1.865}
+      - {x: -3.075, y: -1.9649999}
+      - {x: -2.615, y: -1.9749999}
+      - {x: -2.135, y: -1.4649999}
+      - {x: -1.915, y: -1.375}
+      - {x: -1.785, y: -1.2149999}
+      - {x: -1.4549999, y: -1.155}
+      - {x: -1.435, y: -1.135}
+      - {x: -1.435, y: -0.995}
+      - {x: -0.615, y: -1.115}
+      - {x: 0.765, y: -1.2049999}
+      - {x: 0.78499997, y: -1.245}
+      - {x: 1.495, y: -1.605}
+      - {x: 1.545, y: -1.7249999}
+      - {x: 1.685, y: -1.755}
+      - {x: 1.675, y: -1.9649999}
+      - {x: 1.795, y: -1.995}
+      - {x: 1.785, y: -2.5549998}
+      - {x: 1.885, y: -2.665}
+      - {x: 2.625, y: -2.665}
+      - {x: 2.735, y: -2.595}
+      - {x: 2.975, y: -2.325}
+      - {x: 3.0649998, y: -2.245}
+  m_UseDelaunayMesh: 1
