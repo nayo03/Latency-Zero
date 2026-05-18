@@ -29,7 +29,7 @@ public class G2_UIManager : MonoBehaviour
         // 1. ACTUALIZAR PUNTOS
         if (G2_ScoreText != null)
         {
-            G2_ScoreText.text = "Score: " + puntos; // Actualizamos el marcador de puntos
+            G2_ScoreText.text = "SCORE: " + puntos; // Actualizamos el marcador de puntos
         }
 
         // 2. ACTUALIZAR RELOJ
@@ -55,7 +55,7 @@ public class G2_UIManager : MonoBehaviour
     {
         if (warningText != null)
         {
-            warningText.text = "You’ve been toasted…"; // Escribimos el mensaje de quemado
+            warningText.text = "¡Te tostaste...!"; // Escribimos el mensaje de quemado
         }
     }
 
@@ -64,7 +64,7 @@ public class G2_UIManager : MonoBehaviour
     {
         if (warningText != null)
         {
-            warningText.text = "Don't break the crust!"; // Escribimos el mensaje de impacto
+            warningText.text = "¡No rompas la corteza!"; // Escribimos el mensaje de impacto
         }
     }
 
