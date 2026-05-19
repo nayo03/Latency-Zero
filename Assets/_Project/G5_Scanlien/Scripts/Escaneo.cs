@@ -17,10 +17,10 @@ public class GazeInteraction : MonoBehaviour
     public ParticleSystem particulasExito;
 
     [Header("Efectos de Audio")]
-    [SerializeField] private AudioSource audioSourceBucle; // El que tiene 'Loop' activado
-    [SerializeField] private AudioSource audioSourceExito; // El que NO tiene 'Loop'
-    [SerializeField] private AudioClip sonidoEscaneando;  // Sonido de carga/zumbido
-    [SerializeField] private AudioClip sonidoExito;       // Sonido de "bip" final
+    [SerializeField] private AudioSource audioSourceBucle; 
+    [SerializeField] private AudioSource audioSourceExito; 
+    [SerializeField] private AudioClip sonidoEscaneando;  
+    [SerializeField] private AudioClip sonidoExito;       
 
     private float timer = 0f;
     private GameObject currentTarget;
@@ -29,7 +29,6 @@ public class GazeInteraction : MonoBehaviour
     {
         if (contenedorUI != null) contenedorUI.SetActive(false);
 
-        // Asignamos el clip de escaneo al audio fuente en bucle desde el inicio
         if (audioSourceBucle != null && sonidoEscaneando != null)
         {
             audioSourceBucle.clip = sonidoEscaneando;
@@ -92,7 +91,6 @@ public class GazeInteraction : MonoBehaviour
             if (contenedorUI != null && !contenedorUI.activeSelf)
                 contenedorUI.SetActive(true);
 
-            // NUEVO: Si empieza el escaneo y el sonido en bucle no está sonando, lo reproducimos
             if (audioSourceBucle != null && !audioSourceBucle.isPlaying)
             {
                 audioSourceBucle.Play();
@@ -122,7 +120,6 @@ public class GazeInteraction : MonoBehaviour
         G5_GameManager manager = Object.FindAnyObjectByType<G5_GameManager>();
         if (manager != null) manager.ItemRecogido();
 
-        // NUEVO: Reproducir sonido de éxito final
         ReproducirSonidoExito();
 
         DesvanecerObjetoConHumo(target);
@@ -135,7 +132,6 @@ public class GazeInteraction : MonoBehaviour
         G5_GameManager manager = Object.FindAnyObjectByType<G5_GameManager>();
         if (manager != null) manager.ItemSecundarioRecogido();
 
-        // NUEVO: Reproducir sonido de éxito final
         ReproducirSonidoExito();
 
         DesvanecerObjetoConHumo(target);
@@ -143,7 +139,6 @@ public class GazeInteraction : MonoBehaviour
         currentTarget = null;
     }
 
-    // NUEVO: Función auxiliar para disparar el sonido final
     void ReproducirSonidoExito()
     {
         if (audioSourceExito != null && sonidoExito != null)
@@ -171,7 +166,6 @@ public class GazeInteraction : MonoBehaviour
 
         if (contenedorUI != null) contenedorUI.SetActive(false);
 
-        // NUEVO: Detener el sonido de escaneo ya que el objeto se destruyó con éxito
         if (audioSourceBucle != null) audioSourceBucle.Stop();
 
         Destroy(target);
@@ -186,7 +180,6 @@ public class GazeInteraction : MonoBehaviour
         if (textoPorcentaje != null) textoPorcentaje.text = "0%";
         if (contenedorUI != null) contenedorUI.SetActive(false);
 
-        // NUEVO: Si dejas de mirar el objeto, detenemos el sonido de escaneo inmediatamente
         if (audioSourceBucle != null && audioSourceBucle.isPlaying)
         {
             audioSourceBucle.Stop();

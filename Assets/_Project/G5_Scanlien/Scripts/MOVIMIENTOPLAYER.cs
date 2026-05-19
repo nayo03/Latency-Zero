@@ -33,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
     {
         G5_GameManager manager = Object.FindAnyObjectByType<G5_GameManager>();
 
-        // 2. Si el manager dice que el juego terminó, salimos del Update y no nos movemos
         if (manager != null && manager.juegoTerminado == true)
         {
             return;
