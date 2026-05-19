@@ -40,12 +40,21 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
         }
-        else if (Instance != this) // Si ya hay una instancia y no soy yo..
+        else if (Instance != this)
         {
-            // Limpiamos la referencia  
-            Instance.sfxSource.Stop();
             Destroy(gameObject);
+            return;
         }
+
+        if (musicSource != null)
+            musicSource.volume = 0.5f;
+
+        if (sfxSource != null)
+            sfxSource.volume = 0.5f;
+
+        PlayerPrefs.SetFloat("MusicVolume", 0.5f);
+        PlayerPrefs.SetFloat("SFXVolume", 0.5f);
+        PlayerPrefs.Save();
     }
 
     // =========================================================================
@@ -59,7 +68,7 @@ public class AudioManager : MonoBehaviour
         SoundEffect sfx = sfxLibrary.Find(s => s.nombre == nombreSonido);
 
         // Verificación de seguridad: solo reproduce si el clip existe
-        if (sfx.clip != null)
+        if (sfx.clip != null && sfxSource != null)
         {
             sfxSource.PlayOneShot(sfx.clip);
         }
@@ -73,9 +82,37 @@ public class AudioManager : MonoBehaviour
     // Función para cambiar la música de fondo de forma dinámica
     public void PlayMusic(AudioClip nuevaMusica)
     {
+        if (musicSource == null || nuevaMusica == null) return;
+
         if (musicSource.clip == nuevaMusica) return;
 
         musicSource.clip = nuevaMusica;
         musicSource.Play();
+    }
+
+    public void SetMusicVolume(float value)
+    {
+        if (musicSource != null)
+            musicSource.volume = value;
+
+        PlayerPrefs.SetFloat("MusicVolume", value);
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        if (sfxSource != null)
+            sfxSource.volume = value;
+
+        PlayerPrefs.SetFloat("SFXVolume", value);
+    }
+
+    public float GetMusicVolume()
+    {
+        return musicSource != null ? musicSource.volume : 0.5f;
+    }
+
+    public float GetSFXVolume()
+    {
+        return sfxSource != null ? sfxSource.volume : 0.5f;
     }
 }

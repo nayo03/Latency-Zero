@@ -244,8 +244,7 @@ public class MainManager : MonoBehaviour
     // ===============================================================================================
     //                   RUTAS DE SALIDA Y REINICIO DE VALORES (RESET)
     // ===============================================================================================
-
-    
+        
     public void VolverAlMenuSeleccion() // Esta función es para cuando se utiliza el Modo Selección en el botón volver
     {
         ResetearValores(); // Limpia todo el progreso antes de salir
@@ -254,11 +253,12 @@ public class MainManager : MonoBehaviour
 
     public void AbandonarPartida() // Para abandonar partidas (boton)
     {
+        bool estabaEnModoHistoria = modoHistoriaActivo;
         ResetearValores();
 
-        if (modoHistoriaActivo)
-        {            
-            SceneManager.LoadScene("MainMenu"); // O la escena de mapa de historia
+        if (estabaEnModoHistoria)
+        {
+            SceneManager.LoadScene("MainMenu");
         }
         else
         {

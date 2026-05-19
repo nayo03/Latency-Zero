@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/XR/Settings/OpenXR Package Settings.asset.meta
+guid: 0619d89acaadff34b96c621c4dada5e0
+NativeFormatImporter:
+========
+guid: 5abac2fa13177314b83c24d17782902f
+PrefabImporter:
+>>>>>>>> 8095c8f (añadida toda la funcionalidad de opciones en los mainmenu):Assets/_Project/00_Core/Prefabs/Canvas_Opciones.prefab.meta
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
