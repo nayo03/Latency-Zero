@@ -40,7 +40,9 @@ public class G2_GameManager : MonoBehaviour
 
     [Header("Botones de Victoria Final")]
     public GameObject G2_ButtonContinue;             // Botón que solo sale si estamos en Modo Historia
-    public GameObject G2_ButtonExit;                 // Botón para volver al menú de selección
+    public GameObject G2_ButtonVolver;               // Botón para volver al menú de selección
+    public GameObject G2_ButtonVolver_Historia;      // Botón volver recolocado para modo historia
+    public GameObject G2_ButtonVolver_sincontinue;   // Botón para volver al menú de selección reubicado
 
     // ==========================================================================
     // ----------- INICIO -----------
@@ -193,26 +195,30 @@ public class G2_GameManager : MonoBehaviour
             G2_VictoryPanel.SetActive(true); // Encendemos el panel de victoria final
             Time.timeScale = 0f; // Congelamos el movimiento del juego
 
-            // --- LÓGICA DE BOTONES SEGÚN EL MODO ---
-            if (MainManager.Instance != null)
-            {
-                // Si el modo historia está activo, permitimos "Continuar" a la siguiente escena
-                if (MainManager.Instance.modoHistoriaActivo)
-                {
-                    if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(true);
-                    if (G2_ButtonExit != null) G2_ButtonExit.SetActive(true);
-                }
-                else
-                {
-                    // Si es juego libre, ocultamos el botón de continuar
-                    if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(false);
-                    if (G2_ButtonExit != null) G2_ButtonExit.SetActive(true);
-                }
-            }
-        }
+            // Comprobamos si estamos en modo historia
+            bool modoHistoria = MainManager.Instance != null && MainManager.Instance.modoHistoriaActivo;
 
-        // Al ganar el minijuego completo, reseteamos los estáticos para la próxima vez
-        ResetCheckpoints();
+            // --- LÓGICA DE BOTONES SEGÚN EL MODO ---
+            if (MainManager.Instance.modoHistoriaActivo)
+            {
+                // MODO HISTORIA:
+                // Aparece Continue. Aparece el botón volver específico de historia. Se ocultan los botones volver de modo libre.
+                if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(true);
+                if (G2_ButtonVolver != null) G2_ButtonVolver.SetActive(true);
+                if (G2_ButtonVolver_sincontinue != null) G2_ButtonVolver_sincontinue.SetActive(false);
+            }
+            else
+            {
+                // MODO LIBRE:
+                // No aparece Continue. Aparece solo el botón volver recolocado para cuando NO hay Continue. Se ocultan el volver normal y el volver de historia.
+                if (G2_ButtonContinue != null) G2_ButtonContinue.SetActive(false);
+                if (G2_ButtonVolver != null) G2_ButtonVolver.SetActive(false);
+                if (G2_ButtonVolver_sincontinue != null) G2_ButtonVolver_sincontinue.SetActive(true);
+            }
+
+            // Al ganar el minijuego completo, reseteamos los estáticos para la próxima vez
+            ResetCheckpoints();
+        }
     }
 
     // =========================================================================
