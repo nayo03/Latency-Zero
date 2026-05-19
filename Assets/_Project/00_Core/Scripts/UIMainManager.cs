@@ -27,7 +27,7 @@ public class UIMainManager : MonoBehaviour
         // Llama al sonido de "Click" de tu librería cada vez que pulses algo
         if (AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlaySFX("Click");
+            AudioManager.Instance.PlaySFX("ui_clicknormal");
         }
     }
 

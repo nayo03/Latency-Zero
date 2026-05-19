@@ -19,6 +19,7 @@ public class G2_UIManager : MonoBehaviour
     void Start()
     {
         if (warningText != null) warningText.text = ""; // Limpiamos el texto al empezar la escena
+
     }
 
     // ==========================================================================
@@ -71,9 +72,19 @@ public class G2_UIManager : MonoBehaviour
     // ==========================================================================
     // BOTONES DEL G2_LevelPanel
     // ==========================================================================
+    // Sonido botón
+    public void ReproducirSonidoBoton()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX("ui_clicknormal");
+        }
+    }
     // ------------------ BOTÓN START ------------------
     public void Boton_Start()
     {
+        ReproducirSonidoBoton();
+
         if (G2_GameManager.Instance != null)
         {
             G2_GameManager.Instance.IniciarJuego();
@@ -83,6 +94,7 @@ public class G2_UIManager : MonoBehaviour
     // ------------------ BOTÓN NEXT LEVEL ------------------
     public void Boton_NextLevel()
     {
+        ReproducirSonidoBoton();
         // Buscamos el GameManager para ejecutar la transición de nivel (Nivel 1 -> 2, etc.)
         G2_GameManager gameManager = FindAnyObjectByType<G2_GameManager>(); // Localizamos el gestor en la escena
         if (gameManager != null)
