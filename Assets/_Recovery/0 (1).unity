@@ -346,7 +346,7 @@ Transform:
   m_GameObject: {fileID: 245398210}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 540, y: 960, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -651,6 +651,14 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings:
       - m_Name: 
+        m_Id: 93b37bf8-7f23-4694-9712-22089ccef53e
+        m_Path: <XRHMD>/centerEyePosition
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Position
+        m_Flags: 0
+      - m_Name: 
         m_Id: aebf2010-d786-4726-9a57-6260a18b1986
         m_Path: <HandheldARInputDevice>/devicePosition
         m_Interactions: 
@@ -671,6 +679,14 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings:
       - m_Name: 
+        m_Id: 7333659d-5de9-4285-aa2d-9f0d6b5ad769
+        m_Path: <XRHMD>/centerEyeRotation
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotation
+        m_Flags: 0
+      - m_Name: 
         m_Id: 843c5c00-795b-4f9f-b075-f93d53a37c5f
         m_Path: <HandheldARInputDevice>/deviceRotation
         m_Interactions: 
@@ -689,7 +705,15 @@ MonoBehaviour:
       m_Id: 59fb65a5-0d7f-45b5-9c84-0628b5306bd7
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings: []
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: b765568f-b5a1-4beb-bd55-9a42e3e9c043
+        m_Path: <XRHMD>/trackingState
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Tracking State
+        m_Flags: 0
       m_Flags: 0
     m_Reference: {fileID: 0}
   m_PositionAction:
@@ -794,7 +818,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 0
+  m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
@@ -1802,7 +1826,7 @@ Transform:
   m_GameObject: {fileID: 2027995991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 223.22438, y: -0.00003, z: 2038.0953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
