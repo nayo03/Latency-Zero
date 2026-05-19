@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 
 // ==============================================================================
 // G2_PLAYER: Controlador de la nave del jugador
@@ -21,7 +20,8 @@ public class G2_Player : MonoBehaviour
 
     // ----------- ESTADOS -----------
     public bool isDead = false;              // Estado de vida (público para que el Alien lo vea)
-    public enum TipoMuerte { Caida, Choque } // Opciones de muerte para elegir el mensaje de UI
+    public enum TipoMuerte { Caida, Choque } // Opciones de muerte para elegir el mensaje de UI                                             
+    private float ignorarInputInicial = 0f;  // Sirve para ignorar el click/tap que viene del botón Start.
 
     // ==========================================================================
     // PREPARACIÓN INICIAL (Se ejecuta al nacer el objeto)
@@ -46,8 +46,9 @@ public class G2_Player : MonoBehaviour
         }
         else
         {
-            // Si el juego YA ha iniciado (reinicios tras morir), la nave aparece directa en su sitio de juego
-            IniciarPosicionJugador();
+        
+        // Si el juego YA ha iniciado (reinicios tras morir), la nave aparece directa en su sitio de juego
+        IniciarPosicionJugador();
         }
     }
 
@@ -60,22 +61,33 @@ public class G2_Player : MonoBehaviour
         if (isDead || playerInput == null) return;
 
         // FILTRO 2. Si el juego está pausado, no permitimos NI el salto NI el límite del techo
-        if (Time.timeScale == 0) return; 
+        if (Time.timeScale == 0) return;
 
-        // LÓGICA DE SALTO: Comprobamos si se ha pulsado la acción "Interact" en este frame
+        // FILTRO 3:
+        // Al empezar desde el botón Start, ignoramos el input durante un instante. Así el click del botón no se convierte en salto.
+        if (Time.unscaledTime < ignorarInputInicial) return;
+
+        // LÓGICA DE SALTO: 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
-            // Salto.
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * flapForce, ForceMode2D.Impulse);
         }
 
-        // 4. Límite del techo (Solo funciona si el juego ha empezado)
+        // Límite del techo
         if (transform.position.y > 4.6f)
         {
             transform.position = new Vector3(transform.position.x, 4.6f, transform.position.z);
             if (rb.linearVelocity.y > 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         }
+    }
+    // ==========================================================================
+    // BLOQUEO DEL PRIMER INPUT
+    // ==========================================================================
+    public void IgnorarInputInicial()
+    {
+        // Ignoramos el input durante 0.2 segundos después de pulsar Start.
+        ignorarInputInicial = Time.unscaledTime + 0.02f;
     }
 
     // ==========================================================================
