@@ -48,9 +48,28 @@ public class G4_GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if (objetoARSession != null) objetoARSession.SetActive(true);
         
-        // Iniciamos el juego tras cargar el AR
+        
+        ApagarCamarasIntrusas();
+
+        
         juegoActivo = true;
         ActualizarUI();
+    }
+
+    private void ApagarCamarasIntrusas()
+    {
+        
+        Camera[] todasLasCamaras = Object.FindObjectsByType<Camera>(FindObjectsInactive.Exclude);
+    
+        foreach (Camera cam in todasLasCamaras)
+        {
+        
+            if (cam.gameObject.name != "Main Camera")
+            {
+                cam.gameObject.SetActive(false);
+                Debug.Log("¡Cámara intrusa del Modo Historia desactivada con éxito!: " + cam.gameObject.name);
+            }
+        }
     }
 
     void Update()
@@ -89,12 +108,12 @@ public class G4_GameManager : MonoBehaviour
         if (comboActual >= 5)
         {
             bonus = 50;
-            puntosTotales += bonus; // Bonus por racha del GDD
+            puntosTotales += bonus; 
             comboActual = 0;
             Debug.Log("¡Combo de 5! +50 Puntos");
         }
 
-        // Mandamos SOLO los puntos recién ganados (incluyendo el bonus si lo hay) al MainManager
+        
         if (MainManager.Instance != null)
             MainManager.Instance.SumarPuntoTemporal(puntos + bonus);
 
