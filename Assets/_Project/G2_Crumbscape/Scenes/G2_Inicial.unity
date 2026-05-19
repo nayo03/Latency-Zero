@@ -1844,7 +1844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9408350d890257d4ea252211d18565ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_GameManager
-  tiempoNivel: 1
+  tiempoNivel: 30
   juegoIniciado: 0
   NivelActual: 1
   NivelesTotales: 3
@@ -4267,7 +4267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0909d53b52bbd874abcc2bd3ba4f3c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_Player
-  flapForce: 4
+  flapForce: 4.5
   explosionPrefab: {fileID: 8765887599426959777, guid: 95e6ccff12f95284f8037368efe8927f, type: 3}
   isDead: 0
 --- !u!60 &1581282176

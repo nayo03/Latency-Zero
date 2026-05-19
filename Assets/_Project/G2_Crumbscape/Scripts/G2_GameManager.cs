@@ -133,6 +133,8 @@ public class G2_GameManager : MonoBehaviour
         G2_Player player = Object.FindAnyObjectByType<G2_Player>();
         if (player != null)
         {
+            // Evita que el click del botón Start se convierta en salto.
+            player.IgnorarInputInicial();
             player.IniciarPosicionJugador();
         }
     }
@@ -199,7 +201,7 @@ public class G2_GameManager : MonoBehaviour
             bool modoHistoria = MainManager.Instance != null && MainManager.Instance.modoHistoriaActivo;
 
             // --- LÓGICA DE BOTONES SEGÚN EL MODO ---
-            if (MainManager.Instance.modoHistoriaActivo)
+            if (modoHistoria)
             {
                 // MODO HISTORIA:
                 // Aparece Continue. Aparece el botón volver específico de historia. Se ocultan los botones volver de modo libre.
