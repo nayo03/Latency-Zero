@@ -1812,9 +1812,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'fondosIntros.Array.data[4]'
+      value: 
+      objectReference: {fileID: 21300000, guid: b604708a696695646adf0e09782c7786, type: 3}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: 'textosIntros.Array.data[1]'
       value: Mejor no acabar hecho migas...
       objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'fondosFinales.Array.data[4]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 1bfddfaab2a34e0429fae71a6b7ef4d2, type: 3}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
       value: Global_SYSTEMS
