@@ -24,7 +24,7 @@ public class GazeInteraction : MonoBehaviour
 
     private float timer = 0f;
     private GameObject currentTarget;
-
+    public bool EstaEscaneando => currentTarget != null;
     void Start()
     {
         if (contenedorUI != null) contenedorUI.SetActive(false);
