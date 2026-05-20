@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::G2_AsteroidController
   speedX: 4
   speedY: 1.9
-  verticalRange: 1
+  verticalRange: 0.7
   hasVerticalMovement: 1
   rotationSpeed: 80
   puntoDeDespawn: -13
