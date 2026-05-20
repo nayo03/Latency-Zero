@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.XR.Management;
+using UnityEngine.Android;
 
 public class G4_GameManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class G4_GameManager : MonoBehaviour
 
     [Header("UI del Juego")]
     public TextMeshProUGUI textoPuntos;
-    public TextMeshProUGUI textoTiempo; // NUEVO: Para el contador de 2 min
+    public TextMeshProUGUI textoTiempo;
     public GameObject panelVictoria;
     public GameObject botonContinuar;
     public GameObject botonSalir;
@@ -18,20 +19,42 @@ public class G4_GameManager : MonoBehaviour
     [Header("Referencias")]
     public G4_AsteroidSpawner spawner;
 
-    // Variables internas del GDD
-    private float tiempoRestante = 120f; // 2 minutos de juego
+    private float tiempoRestante = 120f;
     private int puntosTotales = 0;
     private int comboActual = 0;
     private bool juegoActivo = false;
 
     void Start()
     {
-        if (objetoARSession != null) objetoARSession.SetActive(false);
+#if UNITY_ANDROID && !UNITY_EDITOR
+        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+        {
+            Permission.RequestUserPermission(Permission.Camera);
+        }
+#endif
+
+        if (objetoARSession != null)
+        {
+            objetoARSession.SetActive(false);
+        }
+
         StartCoroutine(ReactivarAR());
     }
 
     IEnumerator ReactivarAR()
     {
+        if (XRGeneralSettings.Instance == null)
+        {
+            Debug.LogError("XRGeneralSettings.Instance es NULL");
+            yield break;
+        }
+
+        if (XRGeneralSettings.Instance.Manager == null)
+        {
+            Debug.LogError("XR Manager es NULL");
+            yield break;
+        }
+
         if (XRGeneralSettings.Instance.Manager.activeLoader != null)
         {
             XRGeneralSettings.Instance.Manager.StartSubsystems();
@@ -39,31 +62,35 @@ public class G4_GameManager : MonoBehaviour
         else
         {
             yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+
             if (XRGeneralSettings.Instance.Manager.activeLoader != null)
             {
                 XRGeneralSettings.Instance.Manager.StartSubsystems();
             }
+            else
+            {
+                Debug.LogError("No se pudo inicializar ningún loader XR.");
+                yield break;
+            }
         }
 
-        yield return new WaitForSeconds(0.5f);
-        if (objetoARSession != null) objetoARSession.SetActive(true);
-        
-        
+        if (objetoARSession != null)
+        {
+            objetoARSession.SetActive(true);
+        }
+
         ApagarCamarasIntrusas();
 
-        
         juegoActivo = true;
         ActualizarUI();
     }
 
     private void ApagarCamarasIntrusas()
     {
-        
         Camera[] todasLasCamaras = Object.FindObjectsByType<Camera>(FindObjectsInactive.Exclude);
-    
+
         foreach (Camera cam in todasLasCamaras)
         {
-        
             if (cam.gameObject.name != "Main Camera")
             {
                 cam.gameObject.SetActive(false);
@@ -108,12 +135,11 @@ public class G4_GameManager : MonoBehaviour
         if (comboActual >= 5)
         {
             bonus = 50;
-            puntosTotales += bonus; 
+            puntosTotales += bonus;
             comboActual = 0;
             Debug.Log("¡Combo de 5! +50 Puntos");
         }
 
-        
         if (MainManager.Instance != null)
             MainManager.Instance.SumarPuntoTemporal(puntos + bonus);
 
@@ -134,7 +160,9 @@ public class G4_GameManager : MonoBehaviour
     private void GanarMinijuego()
     {
         juegoActivo = false;
-        if (spawner != null) spawner.gameObject.SetActive(false);
+
+        if (spawner != null)
+            spawner.gameObject.SetActive(false);
 
         if (panelVictoria != null)
         {
@@ -145,8 +173,12 @@ public class G4_GameManager : MonoBehaviour
             if (MainManager.Instance != null)
             {
                 bool modoHistoria = MainManager.Instance.modoHistoriaActivo;
-                if (botonContinuar != null) botonContinuar.SetActive(modoHistoria);
-                if (botonSalir != null) botonSalir.SetActive(true);
+
+                if (botonContinuar != null)
+                    botonContinuar.SetActive(modoHistoria);
+
+                if (botonSalir != null)
+                    botonSalir.SetActive(true);
             }
         }
     }
