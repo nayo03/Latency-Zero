@@ -93,22 +93,27 @@ public class G2_GameManager : MonoBehaviour
         // Cuenta atrás del cronómetro
         if (tiempoRestante > 0)
         {
-            tiempoRestante -= Time.deltaTime; // Mientras quede tiempo, restamos la fracción de segundo que ha pasado (deltaTime)
-            ActualizarTodoEnUI();
-        }
-        else
-        {
-            // El reloj llega a cero: bloqueamos el tiempo y decidimos si pasar fase o ganar
-            tiempoRestante = 0;
+            tiempoRestante -= Time.deltaTime;
+
+            // Evita que el tiempo baje de 0 y aparezca -0.01
+            if (tiempoRestante < 0)
+            {
+                tiempoRestante = 0;
+            }
+
             ActualizarTodoEnUI();
 
-            if (NivelActual < NivelesTotales)
+            // Cuando llega a 0, pasamos de fase o ganamos
+            if (tiempoRestante <= 0)
             {
-                TerminarFase();
-            }
-            else
-            {
-                GanarMinijuego();
+                if (NivelActual < NivelesTotales)
+                {
+                    TerminarFase();
+                }
+                else
+                {
+                    GanarMinijuego();
+                }
             }
         }
     }
