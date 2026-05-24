@@ -33,11 +33,11 @@ public class G5_GameManager : MonoBehaviour
     public TextMeshProUGUI textoPuntos;
     public TextMeshProUGUI textoItemsPrincipales;
     public TextMeshProUGUI textoItemsSecundarios;
-    public GameObject panelVictoria;
 
     [Header("Configuración de Tiempo")]
     public float tiempoRestante = 180f; // 3 minutos en segundos
     public TextMeshProUGUI textoCronometro;
+    public GameObject panelVictoria;
     public GameObject panelDerrota; // Panel extra por si se acaba el tiempo
 
     [Header("Botones de Victoria (UI)")]
@@ -48,6 +48,9 @@ public class G5_GameManager : MonoBehaviour
     private int itemsSecundariosActuales = 0;
     private int puntosTemporalesG5 = 0;
     public bool juegoTerminado = false;
+
+    [Header("Final automático")]
+    public float segundosAntesDeSalir = 3f;
 
     private void Awake()
     {
@@ -105,6 +108,8 @@ public class G5_GameManager : MonoBehaviour
             if (tiempoRestante < 30) textoCronometro.color = Color.red;
         }
     }
+
+
 
     IEnumerator ReactivarXR()
     {
@@ -167,28 +172,57 @@ public class G5_GameManager : MonoBehaviour
 
     private void GanarMinijuego()
     {
-        juegoTerminado = true;  
+        juegoTerminado = true;
+
         if (panelVictoria != null)
-        {
             panelVictoria.SetActive(true);
 
-            // Liberamos el ratón para el menú de victoria
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+        if (panelDerrota != null)
+            panelDerrota.SetActive(false);
 
-            if (MainManager.Instance != null)
-            {
-                bool esHistoria = MainManager.Instance.modoHistoriaActivo;
-                if (botonContinuar != null) botonContinuar.SetActive(esHistoria);
-                if (botonSalir != null) botonSalir.SetActive(true);
-            }
-        }
+        if (botonContinuar != null)
+            botonContinuar.SetActive(false);
+
+        if (botonSalir != null)
+            botonSalir.SetActive(false);
+
+        StartCoroutine(SalidaAutomatica());
     }
 
     private void PerderPorTiempo()
     {
         juegoTerminado = true;
-        MostrarMenuFinal(panelDerrota);
+
+        if (panelDerrota != null)
+            panelDerrota.SetActive(true);
+
+        if (panelVictoria != null)
+            panelVictoria.SetActive(false);
+
+        if (botonContinuar != null)
+            botonContinuar.SetActive(false);
+
+        if (botonSalir != null)
+            botonSalir.SetActive(false);
+
+        StartCoroutine(SalidaAutomatica());
+    }
+
+    private IEnumerator SalidaAutomatica()
+    {
+        yield return new WaitForSeconds(segundosAntesDeSalir);
+
+        if (MainManager.Instance == null)
+            yield break;
+
+        if (MainManager.Instance.modoHistoriaActivo)
+        {
+            MainManager.Instance.FinalizarEscenaActual();
+        }
+        else
+        {
+            MainManager.Instance.VolverAlMenuSeleccion();
+        }
     }
 
     private void MostrarMenuFinal(GameObject panelAActivar)

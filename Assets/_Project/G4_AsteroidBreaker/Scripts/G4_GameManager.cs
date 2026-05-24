@@ -19,7 +19,7 @@ public class G4_GameManager : MonoBehaviour
     [Header("Referencias")]
     public G4_AsteroidSpawner spawner;
 
-    private float tiempoRestante = 120f;
+    private float tiempoRestante = 60f;  
     private int puntosTotales = 0;
     private int comboActual = 0;
     private bool juegoActivo = false;
@@ -127,8 +127,8 @@ public class G4_GameManager : MonoBehaviour
     {
         if (spawner == null) return;
 
-        if (tiempoRestante <= 30f) spawner.velocidadSpawn = "Rapida";
-        else if (tiempoRestante <= 75f) spawner.velocidadSpawn = "Moderada";
+        if (tiempoRestante <= 15f) spawner.velocidadSpawn = "Rapida";
+        else if (tiempoRestante <= 35f) spawner.velocidadSpawn = "Moderada";
         else spawner.velocidadSpawn = "Lenta";
     }
 

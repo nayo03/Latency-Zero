@@ -172,35 +172,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: spritePrologoComic
-      value: 
-      objectReference: {fileID: 21300000, guid: c829054d05a69ce4e94c56f59b974bdc, type: 3}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: textoStarWarsIntro
-      value: "\xA1INVASI\xD3N EN EL SISTEMA SOLAR! Una devastadora AMENAZA ALIEN\xCDGENA
-        ha aniquilado a la NASA y destruido las defensas globales, dejando a la Tierra
-        indefensa y sumida en el p\xE1nico.\n\nSin tecnolog\xEDa ni ej\xE9rcito,
-        el gobierno detecta una ins\xF3lita lectura de energ\xEDa en un garaje residencial:
-        un humilde PANADERO ha construido en secreto su propia astronave con chatarra
-        reciclada.\n\nCon las manos manchadas de harina y el motor en marcha, \xA1este
-        inesperado h\xE9roe despega hacia lo desconocido como la \xFAltima esperanza
-        de la humanidad!..."
-      objectReference: {fileID: 0}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'fondosIntros.Array.data[0]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 966ff56bc41105a47936891022b5a0f2, type: 3}
-    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'textosIntros.Array.data[0]'
+      propertyPath: 'textosIntros.Array.data[2]'
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'fondosFinales.Array.data[0]'
+      propertyPath: 'textosIntros.Array.data[3]'
       value: 
-      objectReference: {fileID: 21300000, guid: d4f3baaa829bc2b49bd4effd7c7aec0a, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
-      propertyPath: 'textosFinales.Array.data[0]'
-      value: 'Empieza la aventura! '
+      propertyPath: 'textosIntros.Array.data[4]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosFinales.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosFinales.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047744994742806488, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
+      propertyPath: 'textosFinales.Array.data[4]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3234492407741347312, guid: 5030b99b0d903e34aafccead7edf1418, type: 3}
       propertyPath: m_Name
