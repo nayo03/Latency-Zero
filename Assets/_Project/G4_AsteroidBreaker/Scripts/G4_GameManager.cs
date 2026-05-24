@@ -26,13 +26,6 @@ public class G4_GameManager : MonoBehaviour
 
     void Start()
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
-        {
-            Permission.RequestUserPermission(Permission.Camera);
-        }
-#endif
-
         if (objetoARSession != null)
         {
             objetoARSession.SetActive(false);
@@ -43,6 +36,20 @@ public class G4_GameManager : MonoBehaviour
 
     IEnumerator ReactivarAR()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+    if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+    {
+        Permission.RequestUserPermission(Permission.Camera);
+        yield return new WaitForSeconds(1.5f);
+    }
+
+    if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+    {
+        Debug.LogError("G4 AR - Permiso de cámara denegado");
+        yield break;
+    }
+#endif
+
         if (XRGeneralSettings.Instance == null)
         {
             Debug.LogError("XRGeneralSettings.Instance es NULL");
@@ -55,24 +62,25 @@ public class G4_GameManager : MonoBehaviour
             yield break;
         }
 
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-        {
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
-        }
-        else
-        {
-            yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+        var manager = XRGeneralSettings.Instance.Manager;
 
-            if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-            {
-                XRGeneralSettings.Instance.Manager.StartSubsystems();
-            }
-            else
-            {
-                Debug.LogError("No se pudo inicializar ningún loader XR.");
-                yield break;
-            }
+        if (manager.isInitializationComplete)
+        {
+            manager.StopSubsystems();
+            manager.DeinitializeLoader();
         }
+
+        yield return manager.InitializeLoader();
+
+        if (manager.activeLoader == null)
+        {
+            Debug.LogError("No se pudo inicializar ningún loader XR.");
+            yield break;
+        }
+
+        manager.StartSubsystems();
+
+        yield return new WaitForSeconds(0.5f);
 
         if (objetoARSession != null)
         {

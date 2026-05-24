@@ -63,7 +63,7 @@ public class G5_GameManager : MonoBehaviour
     void Start()
     {
         // Forzamos el inicio de los subsistemas de VR
-        StartCoroutine(ReactivarXR());
+        // StartCoroutine(ReactivarXR());
 
         if (panelVictoria != null) panelVictoria.SetActive(false);
         if (panelDerrota != null) panelDerrota.SetActive(false);
