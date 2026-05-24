@@ -4078,9 +4078,9 @@ MonoBehaviour:
   colRangoNivel2: 0.7
   colRangoNivel3: 0.9
   astLimiteBordes: 0.8
-  zonaSeguraNivel1: 0.3
-  zonaSeguraNivel2: 0.25
-  zonaSeguraNivel3: 0.15
+  zonaSeguraNivel1: 0.4
+  zonaSeguraNivel2: 0.3
+  zonaSeguraNivel3: 0.3
   gameManager: {fileID: 714744283}
 --- !u!4 &1418207979
 Transform:
@@ -4267,7 +4267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0909d53b52bbd874abcc2bd3ba4f3c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_Player
-  flapForce: 4.5
+  flapForce: 4
   explosionPrefab: {fileID: 8765887599426959777, guid: 95e6ccff12f95284f8037368efe8927f, type: 3}
   isDead: 0
 --- !u!60 &1581282176
