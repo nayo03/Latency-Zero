@@ -4080,7 +4080,7 @@ MonoBehaviour:
   astLimiteBordes: 0.8
   zonaSeguraNivel1: 0.4
   zonaSeguraNivel2: 0.3
-  zonaSeguraNivel3: 0.3
+  zonaSeguraNivel3: 0.35
   gameManager: {fileID: 714744283}
 --- !u!4 &1418207979
 Transform:
