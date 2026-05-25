@@ -106,9 +106,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589c62009781b6d4b8d1ffb39b5691a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::G2_AsteroidController
-  speedX: 3
+  speedX: 4.5
   speedY: 1.5
-  verticalRange: 0.8
+  verticalRange: 0.3
   hasVerticalMovement: 1
   rotationSpeed: 65
   puntoDeDespawn: -13

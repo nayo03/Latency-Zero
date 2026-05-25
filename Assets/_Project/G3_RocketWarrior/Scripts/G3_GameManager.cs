@@ -38,7 +38,6 @@ public class G3_GameManager : MonoBehaviour
     [Header("Panel Final")]
     public GameObject panelFinal;           // Panel único para victoria y derrota
     public GameObject botonContinuar;       // Solo visible en modo historia al ganar
-    public GameObject botonJugarDeNuevo;    // Siempre visible
     public GameObject botonSalir;           // Siempre visible
 
     private int _puntosTotales = 0;         // Puntos acumulados en este minijuego
@@ -110,11 +109,12 @@ public class G3_GameManager : MonoBehaviour
 
             // Continuar solo aparece en modo historia Y si has ganado
             bool historia = MainManager.Instance != null && MainManager.Instance.modoHistoriaActivo;
-            botonContinuar.SetActive(historia && ganado);
 
-            // Estos siempre visibles
-            botonJugarDeNuevo.SetActive(true);
-            botonSalir.SetActive(true);
+            if (botonContinuar != null)
+                botonContinuar.SetActive(historia && ganado);
+
+            if (botonSalir != null)
+                botonSalir.SetActive(true);
         }
     }
 
