@@ -275,6 +275,11 @@ public class MainManager : MonoBehaviour
     // Para el botón final que sale en la escena de puntuación final
     public void ResetTotal()
     {
+        // >>> NUEVO: Antes de borrar los puntos los guardamos en el Scoreboard permanente
+        if (baseDeDatos != null)
+        {
+            baseDeDatos.GuardarEnScoreboard();
+        }
         ResetearValores(); // Limpia todo el progreso antes de salir
         SceneManager.LoadScene("MainMenu");
     }
