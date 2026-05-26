@@ -59,28 +59,22 @@ public class MainDataManager : ScriptableObject
     // =========================================================================
     public void GuardarEnScoreboard()
     {
-        // >>> NUEVO: Si por un cambio de escena el nombre quedó vacío en RAM, lo rescatamos de PlayerPrefs
         if (string.IsNullOrEmpty(nombreJugadorActual))
         {
             if (PlayerPrefs.HasKey("NombrePilotoTemporal"))
             {
                 nombreJugadorActual = PlayerPrefs.GetString("NombrePilotoTemporal");
-                Debug.Log("[Scoreboard] Nombre rescatado con éxito de PlayerPrefs: " + nombreJugadorActual);
             }
         }
 
-        // De aquí en adelante el código sigue exactamente igual...
-        Debug.Log($"[Scoreboard] Intentando guardar partida. Nombre: {nombreJugadorActual}, Puntos: {puntosTotales}");
-
-        if (string.IsNullOrEmpty(nombreJugadorActual))
-        {
-            Debug.LogWarning("[Scoreboard] No se puede guardar: El nombre del jugador está vacío.");
-            return;
-        }
+        if (string.IsNullOrEmpty(nombreJugadorActual)) return;
 
         List<FilaScoreboard> listaScore = CargarScoreboard();
         listaScore.Add(new FilaScoreboard(nombreJugadorActual, puntosTotales));
-        listaScore.Sort((x, y) => y.puntuacion.CompareTo(x.puntuacion));
+
+        // >>> CAMBIO SEGURO: Ordenamos de forma base y luego invertimos para asegurar que el mayor vaya arriba
+        listaScore.Sort((x, y) => x.puntuacion.CompareTo(y.puntuacion));
+        listaScore.Reverse(); // ¡Esto da la vuelta a la tortilla! El más alto se pone el primero.
 
         if (listaScore.Count > 5)
         {
@@ -92,11 +86,9 @@ public class MainDataManager : ScriptableObject
         string json = JsonUtility.ToJson(contenedor);
         PlayerPrefs.SetString("ScoreboardData", json);
         PlayerPrefs.Save();
-
-        Debug.Log("[Scoreboard] ¡Partida guardada con éxito en PlayerPrefs! JSON generado: " + json);
     }
 
-    
+
     // Método para obtener la lista desde cualquier sitio (como el menú principal)
     public List<FilaScoreboard> CargarScoreboard()
     {
@@ -108,7 +100,7 @@ public class MainDataManager : ScriptableObject
         }
         else
         {
-            // >>> NUEVO: Si no hay datos (primera vez que se abre el juego), creamos el Top 5 de fábrica
+            // Creamos la lista base
             List<FilaScoreboard> listaPorDefecto = new List<FilaScoreboard>()
             {
                 new FilaScoreboard("Luke_Skywalker", 500),
@@ -118,7 +110,10 @@ public class MainDataManager : ScriptableObject
                 new FilaScoreboard("C3PO", 100)
             };
 
-            // Los guardamos inmediatamente en PlayerPrefs para que ya existan de forma permanente
+            // >>> CAMBIO SEGURO: Los ordenamos e invertimos igual que antes para blindar el inicio
+            listaPorDefecto.Sort((x, y) => x.puntuacion.CompareTo(y.puntuacion));
+            listaPorDefecto.Reverse();
+
             ListaContenedor contenedor = new ListaContenedor();
             contenedor.lista = listaPorDefecto;
             string json = JsonUtility.ToJson(contenedor);

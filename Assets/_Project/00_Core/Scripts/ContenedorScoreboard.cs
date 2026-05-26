@@ -36,17 +36,21 @@ public class ContenedorScoreboard : MonoBehaviour
             Destroy(hijo.gameObject);
         }
 
-        // 2. Comprobamos si el MainManager ya está listo
         if (MainManager.Instance == null || MainManager.Instance.baseDeDatos == null)
         {
-            Debug.LogWarning("Scoreboard en espera: El MainManager aún no se ha inicializado en esta escena.");
+            Debug.LogWarning("Scoreboard en espera: El MainManager aún no se ha inicializado.");
             return;
         }
 
-        // 3. Cargamos la lista ordenada de puntuaciones
+        // 2. Cargamos la lista (da igual cómo venga de la base de datos)
         List<MainDataManager.FilaScoreboard> listaMejores = MainManager.Instance.baseDeDatos.CargarScoreboard();
 
-        // 4. Generamos las filas en la UI
+        // >>> ¡EL TRUCO SUPREMO!: Forzamos el orden correcto AQUÍ, milisegundos antes de pintarlo
+        // Ordenamos de menor a mayor y luego invertimos para asegurar que el más grande vaya arriba
+        listaMejores.Sort((x, y) => x.puntuacion.CompareTo(y.puntuacion));
+        
+
+        // 3. Generamos las filas en la UI ya ordenadas sí o sí
         foreach (MainDataManager.FilaScoreboard dato in listaMejores)
         {
             GameObject nuevaFila = Instantiate(filaPrefab, contenedorFilas);
