@@ -19,20 +19,13 @@ public class G4_GameManager : MonoBehaviour
     [Header("Referencias")]
     public G4_AsteroidSpawner spawner;
 
-    private float tiempoRestante = 120f;
+    private float tiempoRestante = 60f;  
     private int puntosTotales = 0;
     private int comboActual = 0;
     private bool juegoActivo = false;
 
     void Start()
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
-        {
-            Permission.RequestUserPermission(Permission.Camera);
-        }
-#endif
-
         if (objetoARSession != null)
         {
             objetoARSession.SetActive(false);
@@ -43,6 +36,20 @@ public class G4_GameManager : MonoBehaviour
 
     IEnumerator ReactivarAR()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+    if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+    {
+        Permission.RequestUserPermission(Permission.Camera);
+        yield return new WaitForSeconds(1.5f);
+    }
+
+    if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+    {
+        Debug.LogError("G4 AR - Permiso de cámara denegado");
+        yield break;
+    }
+#endif
+
         if (XRGeneralSettings.Instance == null)
         {
             Debug.LogError("XRGeneralSettings.Instance es NULL");
@@ -55,24 +62,25 @@ public class G4_GameManager : MonoBehaviour
             yield break;
         }
 
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-        {
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
-        }
-        else
-        {
-            yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+        var manager = XRGeneralSettings.Instance.Manager;
 
-            if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-            {
-                XRGeneralSettings.Instance.Manager.StartSubsystems();
-            }
-            else
-            {
-                Debug.LogError("No se pudo inicializar ningún loader XR.");
-                yield break;
-            }
+        if (manager.isInitializationComplete)
+        {
+            manager.StopSubsystems();
+            manager.DeinitializeLoader();
         }
+
+        yield return manager.InitializeLoader();
+
+        if (manager.activeLoader == null)
+        {
+            Debug.LogError("No se pudo inicializar ningún loader XR.");
+            yield break;
+        }
+
+        manager.StartSubsystems();
+
+        yield return new WaitForSeconds(0.5f);
 
         if (objetoARSession != null)
         {
@@ -119,8 +127,8 @@ public class G4_GameManager : MonoBehaviour
     {
         if (spawner == null) return;
 
-        if (tiempoRestante <= 30f) spawner.velocidadSpawn = "Rapida";
-        else if (tiempoRestante <= 75f) spawner.velocidadSpawn = "Moderada";
+        if (tiempoRestante <= 15f) spawner.velocidadSpawn = "Rapida";
+        else if (tiempoRestante <= 35f) spawner.velocidadSpawn = "Moderada";
         else spawner.velocidadSpawn = "Lenta";
     }
 
