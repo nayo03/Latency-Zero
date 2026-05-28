@@ -57,48 +57,38 @@ MonoBehaviour:
   indiceEscenasIniciales: 0
   modoHistoriaActivo: 0
   fondosIntros:
-  - {fileID: 21300000, guid: c61b1f89cd8ad7943b3b38a5f9d15f3e, type: 3}
+  - {fileID: 21300000, guid: 966ff56bc41105a47936891022b5a0f2, type: 3}
   - {fileID: 21300000, guid: f21c29ce42ec9ea418e734a1ca93c13b, type: 3}
   - {fileID: 21300000, guid: c8d428d21e4a91f4785dc49ced63282a, type: 3}
   - {fileID: 21300000, guid: 5e26e4025308fbc47bb3955bfb1b6bae, type: 3}
-  - {fileID: 21300000, guid: 85dd82fe2e7f85747bcf6b5dbc3b0eae, type: 3}
+  - {fileID: 21300000, guid: bd95f5a4363e6774bb098c5aee421f1e, type: 3}
   textosIntros:
-  - q
+  - 
   - Mejor no acabar hecho migas...
   - q
   - q
   - q
   fondosFinales:
-  - {fileID: 21300000, guid: cd7d61ebb836bb04094fa95d674d5bef, type: 3}
-  - {fileID: 21300000, guid: f21c29ce42ec9ea418e734a1ca93c13b, type: 3}
+  - {fileID: 21300000, guid: d4f3baaa829bc2b49bd4effd7c7aec0a, type: 3}
+  - {fileID: 21300000, guid: 5f68823aa4f7e43428e52531d34f6fda, type: 3}
   - {fileID: 21300000, guid: 4c860d799eb2eb142bc9690df5b03759, type: 3}
   - {fileID: 21300000, guid: 45528ae2eef7da14cbebc244888cf610, type: 3}
-  - {fileID: 21300000, guid: 085a11ea6d537a54aa96cc581a19cf24, type: 3}
+  - {fileID: 21300000, guid: b1573c266fcdaab4fadc57ff65deecb5, type: 3}
   textosFinales:
-  - 1
+  - 'Empieza la aventura! '
   - "Ni todas las piedras del universo podr\xE1n detenerme."
   - 1
   - 1
   - 1
-  spritePrologoComic: {fileID: 21300000, guid: d4073f84714283f458f59ac3e3c4017d, type: 3}
-  textoStarWarsIntro: "Son tiempos de aparente calma en el planeta. En un tranquilo
-    y apartado pueblo, un humilde PANADERO custodia un secreto que desaf\xEDa a la
-    gravedad. Mientras sus d\xEDas transcurren entre harina y hornos, sus noches
-    se consumen en la clandestinidad de su garaje, persiguiendo un sue\xF1o imposible:
-    alcanzar las estrellas y hallar vida m\xE1s all\xE1 de nuestro mundo. Con ingenio,
-    chatarra reciclada y una determinaci\xF3n inquebrantable, ha levantado pieza
-    a pieza su propia astronave.\n\nLa paz se desvanece de golpe. Una misteriosa
-    y hostil AMENAZA ALIEN\xCDGENA ha irrumpido en el sistema solar con una violencia
-    devastadora. En un ataque rel\xE1mpago, las comunicaciones caen, las estaciones
-    orbitales son reducidas a cenizas y las misiones oficiales de la NASA quedan
-    completamente aniquiladas. Sin cient\xEDficos, sin tecnolog\xEDa avanzada y sumida
-    en el p\xE1nico, la humanidad se encuentra indefensa ante el invasor.\n\nCon
-    los recursos globales reducidos a escombros, el gobierno busca desesperadamente
-    una alternativa desesperada. Es entonces cuando los servicios de inteligencia
-    descubren una ins\xF3lita lectura de energ\xEDa en un garaje residencial. La
-    \xFAltima l\xEDnea de defensa de la Tierra no viste traje militar ni ostenta
-    galones... lleva un delantal, las manos manchadas de harina y un cohete casi
-    listo para despegar hacia lo desconocido...."
+  spritePrologoComic: {fileID: 21300000, guid: c829054d05a69ce4e94c56f59b974bdc, type: 3}
+  textoStarWarsIntro: "\xA1INVASI\xD3N EN EL SISTEMA SOLAR! Una devastadora AMENAZA
+    ALIEN\xCDGENA ha aniquilado a la NASA y destruido las defensas globales, dejando
+    a la Tierra indefensa y sumida en el p\xE1nico.\n\nSin tecnolog\xEDa ni ej\xE9rcito,
+    el gobierno detecta una ins\xF3lita lectura de energ\xEDa en un garaje residencial:
+    un humilde PANADERO ha construido en secreto su propia astronave con chatarra
+    reciclada.\n\nCon las manos manchadas de harina y el motor en marcha, \xA1este
+    inesperado h\xE9roe despega hacia lo desconocido como la \xFAltima esperanza
+    de la humanidad!..."
 --- !u!1 &4967152883214753510
 GameObject:
   m_ObjectHideFlags: 0
