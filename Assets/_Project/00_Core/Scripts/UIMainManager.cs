@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 // ==============================================================================
 // >>> UIMAINMANAGER: Control de botones, pausa y configuración de audio
@@ -147,6 +148,38 @@ public class UIMainManager : MonoBehaviour
         if (MainManager.Instance != null)
         {
             MainManager.Instance.ResetTotal();
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    //  >>> NUEVO: GESTIÓN DEL NOMBRE DEL JUGADOR
+    // ---------------------------------------------------------------------
+
+    // Asignaremos este método a un botón "Aceptar" o "Guardar Nombre" en tu panel de UI
+    public void RegistrarNombreJugador(TMP_InputField inputNombre) // Cambiar a TMP_InputField si usas TextMeshPro
+    {
+        ReproducirSonidoBoton();
+
+        if (inputNombre != null && !string.IsNullOrWhiteSpace(inputNombre.text))
+        {
+            if (MainManager.Instance != null && MainManager.Instance.baseDeDatos != null)
+            {
+                string nombreLimpio = inputNombre.text.Trim();
+
+                // 1. Guardamos en el ScriptableObject como antes
+                MainManager.Instance.baseDeDatos.nombreJugadorActual = nombreLimpio;
+
+                // >>> NUEVO: Guardamos también en PlayerPrefs inmediatamente para que no se borre nunca
+                PlayerPrefs.SetString("NombrePilotoTemporal", nombreLimpio);
+                PlayerPrefs.Save();
+
+                Debug.Log("Nombre registrado y blindado: " + nombreLimpio);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("El campo de nombre está vacío.");
+            inputNombre.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 }
